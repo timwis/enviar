@@ -1,0 +1,21 @@
+{
+  "name": "twilio-chat-server",
+  "version": "0.1.0",
+  "description": "Server-side interface over twilio's API to support twilio-chat-client",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "timwis <tim@timwis.com>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "kcors": "^1.2.1",
+    "koa": "^1.2.1",
+    "koa-body": "^1.4.0",
+    "koa-route": "^2.4.2",
+    "koa-socket": "^4.4.0",
+    "lorem-ipsum": "^1.0.3",
+    "twilio": "^2.9.1"
+  }
+}

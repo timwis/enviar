@@ -1,0 +1,38 @@
+{
+  "sid": "SM71cadf6d66bb4fc68833c641d7f7fda7",
+  "date_created": "Mon, 01 Aug 2016 10:02:53 +0000",
+  "date_updated": "Mon, 01 Aug 2016 10:02:53 +0000",
+  "date_sent": null,
+  "account_sid": "ACf3072d52657d8f496d1e8c1c30e74b39",
+  "to": "+13088632703",
+  "from": "+15851427131",
+  "messaging_service_sid": null,
+  "body": "Outbound fixture",
+  "status": "queued",
+  "num_segments": "1",
+  "num_media": "0",
+  "direction": "outbound-api",
+  "api_version": "2010-04-01",
+  "price": null,
+  "price_unit": "USD",
+  "error_code": null,
+  "error_message": null,
+  "uri": "/2010-04-01/Accounts/ACf3072d52657d8f496d1e8c1c30e74b39/Messages/SM71cadf6d66bb4fc01139c641d7f7fda7.json",
+  "subresource_uris": {
+    "media": "/2010-04-01/Accounts/ACf3072d52657d8f496d1e8c1c30e74b39/Messages/SM71cadf6d66bb4fc01139c641d7f7fda7/Media.json"
+  },
+  "dateCreated": "2016-08-01T10:02:53.000Z",
+  "dateUpdated": "2016-08-01T10:02:53.000Z",
+  "dateSent": null,
+  "accountSid": "ACf3072d52657d8f496d1e8c1c30e74b39",
+  "messagingServiceSid": null,
+  "numSegments": "1",
+  "numMedia": "0",
+  "apiVersion": "2010-04-01",
+  "priceUnit": "USD",
+  "errorCode": null,
+  "errorMessage": null,
+  "subresourceUris": {
+    "media": "/2010-04-01/Accounts/ACf3072d52657d8f496d1e8c1c30e74b39/Messages/SM71cadf6d66bb4fc01139c641d7f7fda7/Media.json"
+  }
+}

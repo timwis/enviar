@@ -1,0 +1,29 @@
+{
+  "name": "twilio-chat-server",
+  "version": "0.1.0",
+  "description": "Server-side interface over twilio's API to support twilio-chat-client",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "timwis <tim@timwis.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bankai": "^2.0.7",
+    "body": "^5.1.0",
+    "browserify": "^13.1.0",
+    "choo": "^3.2.0",
+    "dotenv": "^2.0.0",
+    "get-form-data": "^1.2.5",
+    "insert-css": "^0.2.0",
+    "lodash": "^4.14.1",
+    "purecss": "^0.6.0",
+    "server-router": "^2.1.0",
+    "sheetify": "^5.0.5",
+    "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8",
+    "timeago.js": "^1.0.5",
+    "twilio": "^2.9.1",
+    "xtend": "^4.0.1"
+  }
+}

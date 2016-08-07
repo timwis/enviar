@@ -1,18 +1,16 @@
 const choo = require('choo')
-const insertCSS = require('insert-css')
 const css = require('sheetify')
-
-const chat = require('./pages/chat')
-
-css('purecss/build/base')
-
-insertCSS(`
+require('insert-css')(`
   html, body {
     height: 100%;
     margin: 0;
     padding: 0;
   }
 `)
+
+const chat = require('./pages/chat')
+
+css('purecss/build/base')
 
 const app = choo()
 

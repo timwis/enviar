@@ -21,7 +21,7 @@ module.exports = {
   },
   effects: {
     fetch: (data, state, send, done) => {
-      http(endpoint, { json: true }, (err, response, body) => {
+      http(endpoint + '/api/messages', { json: true }, (err, response, body) => {
         if (err || response.statusCode !== 200) return done(new Error('Bad request'))
         send('receive', body, done)
       })
@@ -29,7 +29,7 @@ module.exports = {
     outbound: (data, state, send, done) => {
       console.log('sending message: ' + data.body)
       // socket.emit('outbound', data)
-      http.post(endpoint + '/outbound', { json: data }, (err, response) => {
+      http.post(endpoint + '/api/outbound', { json: data }, (err, response) => {
         if (err || response.statusCode !== 200) return done(new Error('Bad request'))
         done() // if outbound is successful, new message is emitted & received via subscription
       })

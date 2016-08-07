@@ -1,7 +1,7 @@
 {
-  "name": "twilio-chat-server",
+  "name": "enviar",
   "version": "0.1.0",
-  "description": "Server-side interface over twilio's API to support twilio-chat-client",
+  "description": "Chat interface for SMS / text messages",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

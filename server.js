@@ -4,6 +4,7 @@ const authToken = process.env.AUTH_TOKEN
 const phone = process.env.PHONE
 const port = process.env.PORT || 3000
 const dev = process.env.NODE_ENV === 'development'
+const title = process.env.TITLE || require('./package.json').name
 
 const http = require('http')
 const serverRouter = require('server-router')
@@ -29,7 +30,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('disconnected'))
 })
 
-const html = bankai.html()
+const html = bankai.html({ title })
 router.on('/', wrapHandler(html))
 
 const css = bankai.css()

@@ -1,6 +1,6 @@
-# twilio-chat
+# enviar
 
-SMS chat for twilio.
+Chat interface for SMS / text messages.
 
 ![screenshot](http://i.imgur.com/DWuJejZ.png)
 

@@ -3,72 +3,80 @@ const accountSid = process.env.ACCOUNT_SID
 const authToken = process.env.AUTH_TOKEN
 const phone = process.env.PHONE
 const port = process.env.PORT || 3000
+const dev = process.env.NODE_ENV === 'development'
 
-const client = require('twilio')(accountSid, authToken)
-const koa = require('koa')
-const route = require('koa-route')
-const cors = require('kcors')
-const socket = require('koa-socket')
-const body = require('koa-body')
-const fs = require('fs')
+const http = require('http')
+const serverRouter = require('server-router')
+const bankai = require('bankai')
+const browserify = require('browserify')
+const fromString = require('from2-string')
+const socketio = require('socket.io')
+const formBody = require('body/form')
+const jsonBody = require('body/json')
+const client = dev
+  ? require('./fixtures/twilio-stub')
+  : require('twilio')(accountSid, authToken)
 
 const formatData = require('./format-data')
-const fixtures = {
-  messages: require('./fixtures/messages.json'),
-  outbound: require('./fixtures/outbound.json')
-}
 
-const app = koa()
-const io = new socket()
+const router = serverRouter()
 
-io.attach(app)
+const server = http.createServer(router)
+  .listen(port, () => console.log('Listening on port ' + port))
 
-app.use(cors())
-app.use(body())
-app.use(route.get('/', list))
-app.use(route.post('/inbound', inbound))
-app.use(route.post('/outbound', outbound))
-
-function * list () {
-  const params = Object.assign({}, this.query) // clone query
-  try {
-    // this.body = yield client.messages.get(params)
-    this.body = fixtures.messages.messages.map(formatData.rest)
-  } catch (e) {
-    this.throw(e, e.status)
-  }
-}
-
-function * inbound () {
-  const formattedMessage = formatData.webhook(this.request.body)
-  console.log(formattedMessage)
-  io.broadcast('message', formattedMessage)
-  this.status = 200
-}
-
-function * outbound () {
-  const data = this.request.body
-  data.From = phone
-  console.dir(data)
-  try {
-    // const response = yield client.messages.post(data)
-    const response = fixtures.outbound
-    response.body = data.body
-    response.to = data.To
-    response.dateCreated = (new Date()).toISOString()
-
-    const formattedResponse = formatData.rest(response)
-    io.broadcast('message', formattedResponse)
-    this.status = 200
-  } catch (e) {
-    this.throw(e, e.status)
-  }
-}
-
-io.on('connection', ({socket}) => {
+io = socketio(server)
+io.on('connection', (socket) => {
   console.log('new connection')
   socket.on('disconnect', () => console.log('disconnected'))
 })
 
-app.listen(port)
-console.log('listening on port', port)
+const html = bankai.html()
+router.on('/', wrapHandler(html))
+
+const css = bankai.css()
+router.on('/bundle.css', wrapHandler(css))
+
+const js = bankai.js(browserify, __dirname + '/client/index.js')
+router.on('/bundle.js', wrapHandler(js))
+
+router.on('/api/messages', function (req, res) {
+  client.messages.get({}, (err, messages) => {
+    if (err) return res.statusCode = 500
+    const formattedMessages = messages.messages.map(formatData.rest)
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(formattedMessages))
+  })
+})
+
+router.on('/api/inbound', {
+  post: function (req, res) {
+    formBody(req, {}, (err, body) => {
+      if (err) return res.statusCode = 400
+
+      const formattedMessage = formatData.webhook(body)
+      io.emit('message', formattedMessage)
+      res.end()
+    })
+  }
+})
+
+router.on('/api/outbound', {
+  post: function (req, res) {
+    jsonBody(req, res, (err, body) => {
+      if (err) return res.statusCode = 400
+
+      body.From = phone
+      client.messages.post(body, (err, response) => {
+        if (err) return res.statusCode = 500
+
+        const formattedResponse = formatData.rest(response)
+        io.emit('message', formattedResponse)
+        res.end()
+      })
+    })
+  }
+})
+
+function wrapHandler (handler) {
+  return (req, res) => handler(req, res).pipe(res)
+}

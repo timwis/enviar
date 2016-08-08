@@ -13,7 +13,7 @@ module.exports = (phones, activePhone) => {
   return html`
   <div class="pure-menu ${prefix}">
     <span class="pure-menu-heading">Conversations</span>
-    <ul class="pure-menu-list">
+    <ul id="conversations" class="pure-menu-list">
       ${phones.map(listItem)}
     </ul>
   </div>`

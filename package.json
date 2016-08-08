@@ -4,7 +4,7 @@
   "description": "Chat interface for SMS / text messages",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava test --verbose"
   },
   "author": "timwis <tim@timwis.com>",
   "license": "MIT",
@@ -32,5 +32,10 @@
     "timeago.js": "^1.0.5",
     "twilio": "^2.9.1",
     "xtend": "^4.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "jsdom": "^9.4.1",
+    "jsdom-global": "^2.0.0"
   }
 }

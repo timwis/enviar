@@ -44,7 +44,7 @@ module.exports = (state, prev, send) => {
   if (activePhone) {
     activeConversation = state.conversations[activePhone]
     if (activeConversation) {
-      const sortedConversation = sortBy(values(activeConversation), 'dateCreated')
+      const sortedConversation = sortBy(values(activeConversation), 'date')
       messages = Messages(activePhone, sortedConversation)
     }
   }

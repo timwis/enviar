@@ -14,7 +14,7 @@ const socketio = require('socket.io')
 const formBody = require('body/form')
 const jsonBody = require('body/json')
 const client = dev
-  ? require('./fixtures/twilio-stub')
+  ? require('./fixtures/twilio/stub')
   : require('twilio')(accountSid, authToken)
 
 const formatData = require('./format-data')

@@ -385,9 +385,9 @@
     },
     {
       "sid": "SMed30d7fa8812494516f2d54240f6a78e",
-      "date_created": "Thu, 26 Feb 2015 19:28:33 +0000",
+      "date_created": "Thu, 26 Feb 2015 19:28:34 +0000",
       "date_updated": "Thu, 26 Feb 2015 19:28:34 +0000",
-      "date_sent": "Thu, 26 Feb 2015 19:28:33 +0000",
+      "date_sent": "Thu, 26 Feb 2015 19:28:34 +0000",
       "account_sid": "ACf3072d52657d8f496d1e8c1c30e74b39",
       "to": "+17034524023",
       "from": "+15851427131",
@@ -406,9 +406,9 @@
       "subresource_uris": {
         "media": "/2010-04-01/Accounts/ACf3072d52657d8f496d1e8c1c30e74b39/Messages/SMed30d7fa8812494516f2d54240f6a78e/Media.json"
       },
-      "dateCreated": "2015-02-26T19:28:33.000Z",
+      "dateCreated": "2015-02-26T19:28:34.000Z",
       "dateUpdated": "2015-02-26T19:28:34.000Z",
-      "dateSent": "2015-02-26T19:28:33.000Z",
+      "dateSent": "2015-02-26T19:28:34.000Z",
       "accountSid": "ACf3072d52657d8f496d1e8c1c30e74b39",
       "messagingServiceSid": null,
       "numSegments": "1",

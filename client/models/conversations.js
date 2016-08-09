@@ -5,9 +5,6 @@ const merge = require('lodash/merge')
 const extend = require('xtend')
 const io = require('socket.io-client')
 
-const endpoint = 'http://localhost:3000'
-const socket = io(endpoint)
-
 module.exports = {
   state: {
     conversations: {}
@@ -21,29 +18,29 @@ module.exports = {
   },
   effects: {
     fetch: (data, state, send, done) => {
-      http(endpoint + '/api/messages', { json: true }, (err, response, body) => {
+      http('/api/messages', { json: true }, (err, response, body) => {
         if (err || response.statusCode !== 200) return done(new Error('Bad request'))
         send('receive', body, done)
       })
     },
     outbound: (data, state, send, done) => {
       console.log('sending message: ' + data.body)
-      // socket.emit('outbound', data)
-      http.post(endpoint + '/api/outbound', { json: data }, (err, response) => {
+      http.post('/api/outbound', { json: data }, (err, response) => {
         if (err || response.statusCode !== 200) return done(new Error('Bad request'))
         done() // if outbound is successful, new message is emitted & received via subscription
       })
     }
   },
-  subscriptions: [
-    (send, done) => {
+  subscriptions: {
+    receiveMessages: (send, done) => {
+      const socket = io()
       socket.on('connect', () => console.log('connected'))
       socket.on('message', (data) => {
         console.log('message received', data)
         send('receive', [data], done)
       })
     }
-  ]
+  }
 }
 
 function createIndexes (messages) {

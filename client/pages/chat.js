@@ -15,6 +15,7 @@ const prefix = css`
   }
   .left {
     width: 20%;
+    overflow-y: auto;
   }
   .right {
     height: 100%;
@@ -25,7 +26,7 @@ const prefix = css`
   .messages {
     flex: 1 auto;
     background-color: #eee;
-    overflow: auto;
+    overflow-y: auto;
   }
   .header {
     font-size: 150%;

@@ -7,6 +7,7 @@ const getFormData = require('get-form-data')
 const ConversationList = require('../components/conversation-list')
 const Messages = require('../components/messages')
 const Compose = require('../components/compose')
+const formatPhone = require('../util').formatPhone
 
 const prefix = css`
   :host {
@@ -65,7 +66,7 @@ module.exports = (state, prev, send) => {
       </div>
       <div class="right">
         <div class="header">
-          ${activePhone}
+          ${formatPhone(activePhone)}
         </div>
         <div class="messages">
           ${messages}

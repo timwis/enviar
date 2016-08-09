@@ -1,6 +1,8 @@
 const html = require('choo/html')
 const css = require('sheetify')
 
+const formatPhone = require('../util').formatPhone
+
 css('purecss/build/menus')
 
 const prefix = css`
@@ -34,7 +36,7 @@ module.exports = (phones, activePhone) => {
     return html`
       <li class=${classes.join(' ')}>
         <a href="/${phone}" class="pure-menu-link">
-          ${phone}
+          ${formatPhone(phone)}
         </a>
       </li>`
   }

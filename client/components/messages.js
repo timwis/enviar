@@ -6,7 +6,6 @@ const prefix = css`
   ul {
     list-style: none;
     padding: 10px;
-    background-color: #eee;
   }
 
   li {
@@ -26,11 +25,11 @@ const prefix = css`
   }
 
   li.outbound div.content {
-    background-color: #b4def3;
+    background-color: #7B9AAD;
   }
 
   li.inbound div.content {
-    background-color: #fff;
+    background-color: #B8DBD9;
   }
 
   abbr {

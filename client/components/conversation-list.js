@@ -4,8 +4,15 @@ const css = require('sheetify')
 css('purecss/build/menus')
 
 const prefix = css`
-  .pure-menu-selected a {
-    background-color: #eee;
+  .pure-menu-selected a,
+  .pure-menu-link:hover,
+  .pure-menu-link:focus {
+    background-color: #F4F4F9;
+    color: #000;
+  }
+  .pure-menu-link,
+  .pure-menu-heading {
+    color: #B8DBD9;
   }
 `
 

@@ -16,6 +16,7 @@ const prefix = css`
   .left {
     width: 20%;
     overflow-y: auto;
+    background-color: #2F4550;
   }
   .right {
     height: 100%;
@@ -25,17 +26,18 @@ const prefix = css`
   }
   .messages {
     flex: 1 auto;
-    background-color: #eee;
+    background-color: #F4F4F9;
     overflow-y: auto;
   }
   .header {
     font-size: 150%;
     padding: 5px;
-    background-color: #eee;
+    background-color: #F4F4F9;
     border-bottom: 1px black solid;
   }
   .compose {
-    height: 50px;
+    height: 75px;
+    background-color: #F4F4F9;
   }
 `
 

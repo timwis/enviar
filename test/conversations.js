@@ -4,6 +4,7 @@ require('jsdom-global')()
 
 const model = require('../client/models/conversations')
 const chat = require('../client/pages/chat')
+const formatPhone = require('../client/util').formatPhone
 const messagesFixture = require('../fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
@@ -70,7 +71,7 @@ test('reducers : receive : sort convo list', (t) => {
 
   const firstMsg = sortBy(messagesFixture, 'date').reverse()[0]
   const firstConvo = convos[0].querySelector('a').textContent.trim()
-  t.true(firstConvo === firstMsg.to || firstConvo === firstMsg.from, 'first convo is most recent')
+  t.true(firstConvo === formatPhone(firstMsg.to) || firstConvo === formatPhone(firstMsg.from), 'first convo is most recent')
 })
 
 test('reducers : receive : sort messages list', (t) => {

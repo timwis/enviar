@@ -4,6 +4,7 @@
   "description": "Chat interface for SMS / text messages",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "ava test --verbose"
   },
   "author": "timwis <tim@timwis.com>",

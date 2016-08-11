@@ -1,5 +1,4 @@
 const html = require('choo/html')
-const getFormData = require('get-form-data')
 const css = require('sheetify')
 
 css('purecss/build/forms')
@@ -22,8 +21,12 @@ module.exports = (cb) => {
     </form>`
   
   function onSubmit (e) {
-    const formData = getFormData(e.target)
-    if (cb) cb(formData)
+    const body = e.target.querySelector('#body')
+    if (body.value && cb) {
+      const formData = { body: body.value }
+      cb(formData)
+      body.value = ''
+    }
     e.preventDefault()
   }
 }

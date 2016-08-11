@@ -40,7 +40,7 @@ const prefix = css`
 module.exports = (phone, messages, onSendMsg) => {
   const tree = html`
     <section class=${prefix}>
-      <ul id="messages" onload=${scrollToBottom}>
+      <ul id="messages">
         ${messages.map((msg) => html`
           <li class=${msg.direction === 'inbound' ? 'inbound' : 'outbound'}>
             <div class="content">
@@ -52,8 +52,4 @@ module.exports = (phone, messages, onSendMsg) => {
     </section>`
 
   return tree
-
-  function scrollToBottom (el) {
-    el.scrollTop = el.scrollHeight
-  }
 }

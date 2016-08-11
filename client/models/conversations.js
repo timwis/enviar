@@ -2,6 +2,7 @@ const http = require('choo/http')
 const groupBy = require('lodash/groupby')
 const keyBy = require('lodash/keyby')
 const merge = require('lodash/merge')
+const cloneDeep = require('lodash/clonedeep')
 const extend = require('xtend')
 const io = require('socket.io-client')
 
@@ -12,7 +13,8 @@ module.exports = {
   reducers: {
     receive: (messages, state) => {
       const newConversations = createIndexes(messages)
-      const mergedConversations = merge(state.conversations, newConversations)
+      const oldConversations = cloneDeep(state.conversations) // because merge mutates
+      const mergedConversations = merge(oldConversations, newConversations)
       return { conversations: mergedConversations }
     }
   },
@@ -34,7 +36,6 @@ module.exports = {
   subscriptions: {
     receiveMessages: (send, done) => {
       const socket = io()
-      socket.on('connect', () => console.log('connected'))
       socket.on('message', (data) => {
         console.log('message received', data)
         send('receive', [data], done)

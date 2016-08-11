@@ -29,6 +29,7 @@ const prefix = css`
     flex: 1 auto;
     background-color: #F4F4F9;
     overflow-y: auto;
+    flex-direction: column-reverse;
   }
   .header {
     font-size: 150%;
@@ -54,10 +55,16 @@ module.exports = (state, prev, send) => {
   }
   const phones = Object.keys(state.conversations)
 
-  // if (activePhone && (!prev.params || activePhone !== prev.params.phone)) {
-  //   const scroller = document.querySelector('#messages')
-  //   if (scroller) window.setTimeout(() => scroller.scrollTop = scroller.scrollHeight, 100)
-  // }
+  // If showing a new route or there are new messages, scroll messages pane to bottom
+  if (activePhone && (isNewRoute() || prev.conversations[activePhone] !== activeConversation)) {
+    // This needs to be run after morphdom runs because .scrollTop is not an attribute patched by morphdom
+    window.setTimeout(() => {
+      const messagesContainer = document.querySelector('.messages')
+      if (messagesContainer) {
+        scrollToBottom(messagesContainer)
+      }
+    }, 1)
+  }
 
   return html`
     <div onload=${() => send('fetch')} class=${prefix}>
@@ -66,7 +73,7 @@ module.exports = (state, prev, send) => {
       </div>
       <div class="right">
         <div class="header">
-          ${formatPhone(activePhone)}
+          ${activePhone ? formatPhone(activePhone) : ''}
         </div>
         <div class="messages">
           ${messages}
@@ -77,8 +84,16 @@ module.exports = (state, prev, send) => {
       </div>
     </div>`
   
+  function isNewRoute () {
+    return !prev.params || state.params.phone !== prev.params.phone
+  }
+  
   function onCompose (data) {
     data.To = activePhone
     send('outbound', data)
+  }
+
+  function scrollToBottom (el) {
+    el.scrollTop = el.scrollHeight
   }
 }

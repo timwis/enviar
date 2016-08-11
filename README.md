@@ -2,7 +2,7 @@
 
 Chat interface for SMS / text messages.
 
-![screenshot](http://i.imgur.com/DWuJejZ.png)
+![screenshot](http://i.imgur.com/XMrf0Rd.png)
 
 ## Usage
 1. Install dependencies via `npm install`

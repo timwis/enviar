@@ -2,7 +2,6 @@ const html = require('choo/html')
 const css = require('sheetify')
 const values = require('lodash/values')
 const sortBy = require('lodash/sortby')
-const getFormData = require('get-form-data')
 
 const ConversationList = require('../components/conversation-list')
 const Messages = require('../components/messages')

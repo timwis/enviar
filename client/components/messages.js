@@ -38,7 +38,7 @@ const prefix = css`
 `
 
 module.exports = (phone, messages, onSendMsg) => {
-  const tree = html`
+  return html`
     <section class=${prefix}>
       <ul id="messages">
         ${messages.map((msg) => html`
@@ -50,6 +50,4 @@ module.exports = (phone, messages, onSendMsg) => {
           </li>`)}
       </ul>
     </section>`
-
-  return tree
 }

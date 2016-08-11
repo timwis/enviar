@@ -1,5 +1,9 @@
 const choo = require('choo')
 const css = require('sheetify')
+
+const chat = require('./pages/chat')
+
+css('purecss/build/base')
 require('insert-css')(`
   @import url(https://fonts.googleapis.com/css?family=Roboto);
   html, body {
@@ -12,11 +16,12 @@ require('insert-css')(`
   }
 `)
 
-const chat = require('./pages/chat')
-
-css('purecss/build/base')
-
 const app = choo()
+
+if (process.env.NODE_ENV == 'development') {
+  const log = require('choo-log')
+  app.use(log())
+}
 
 app.model(require('./models/conversations'))
 

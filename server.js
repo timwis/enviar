@@ -36,7 +36,7 @@ router.on('/', wrapHandler(html))
 const css = bankai.css()
 router.on('/bundle.css', wrapHandler(css))
 
-const js = bankai.js(browserify, __dirname + '/client/index.js')
+const js = bankai.js(browserify, __dirname + '/client/index.js', { transform: 'envify' })
 router.on('/bundle.js', wrapHandler(js))
 
 router.on('/api/messages', function (req, res) {

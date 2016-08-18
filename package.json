@@ -26,17 +26,19 @@
     "envify": "^3.4.1",
     "insert-css": "^0.2.0",
     "lodash": "^4.14.1",
+    "nano": "^6.2.0",
+    "pouchdb": "^5.4.5",
     "purecss": "^0.6.0",
     "server-router": "^2.1.0",
     "sheetify": "^5.0.5",
-    "socket.io": "^1.4.8",
-    "socket.io-client": "^1.4.8",
+    "shortid": "^2.2.6",
     "timeago.js": "^1.0.5",
     "twilio": "^2.9.1",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
     "ava": "^0.16.0",
+    "couchdb-push": "^2.3.1",
     "jsdom": "^9.4.1",
     "jsdom-global": "^2.0.0"
   }

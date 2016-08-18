@@ -4,7 +4,16 @@ const keyBy = require('lodash/keyby')
 const merge = require('lodash/merge')
 const cloneDeep = require('lodash/clonedeep')
 const extend = require('xtend')
-const io = require('socket.io-client')
+const PouchDB = require('pouchdb')
+const shortid = require('shortid')
+
+if (process.env.NODE_ENV === 'development') window.PouchDB = PouchDB
+
+const db = new PouchDB('messages')
+db.sync(process.env.COUCH_DB_URL + '/messages', {
+  live: true,
+  retry: true
+})
 
 module.exports = {
   state: {
@@ -20,25 +29,32 @@ module.exports = {
   },
   effects: {
     fetch: (data, state, send, done) => {
-      http('/api/messages', { json: true }, (err, response, body) => {
-        if (err || response.statusCode !== 200) return done(new Error('Bad request'))
-        send('receive', body, done)
+      db.allDocs({ include_docs: true, startkey: 'msg-' }, (err, result) => {
+        if (err) return console.error('Error fetching docs', err)
+        console.log(result)
+        const messages = result.rows.map((row) => row.doc)
+        send('receive', messages, done)
       })
     },
     outbound: (data, state, send, done) => {
       console.log('sending message: ' + data.body)
-      http.post('/api/outbound', { json: data }, (err, response) => {
-        if (err || response.statusCode !== 200) return done(new Error('Bad request'))
+      data._id = `msg-${Date.now()}-${shortid.generate()}`
+      data.direction = 'outbound'
+      db.put(data, (err, response) => {
+        if (err) return done(new Error('Error posting doc'))
         done() // if outbound is successful, new message is emitted & received via subscription
       })
     }
   },
   subscriptions: {
     receiveMessages: (send, done) => {
-      const socket = io()
-      socket.on('message', (data) => {
-        console.log('message received', data)
-        send('receive', [data], done)
+      db.changes({
+        since: 'now',
+        live: true,
+        include_docs: true
+      }).on('change', (change) => {
+        console.log('change', change)
+        send('receive', [change.doc], done)
       })
     }
   }
@@ -48,7 +64,7 @@ function createIndexes (messages) {
   const convosByPhone = groupBy(messages, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
   const convosByPhoneByID = {}
   for (let phone in convosByPhone) {
-    convosByPhoneByID[phone] = keyBy(convosByPhone[phone], 'id')
+    convosByPhoneByID[phone] = keyBy(convosByPhone[phone], '_id')
   }
   return convosByPhoneByID
 }

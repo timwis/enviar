@@ -1,23 +1,34 @@
-exports.rest = function (msg) {
+exports.fromTwilioRest = function (msg) {
+  const timestamp = Date.parse(msg.dateCreated)
   return {
-    id: msg.sid,
+    _id: `msg-${timestamp}-${msg.sid}`,
+    providerId: msg.sid,
     date: msg.dateCreated,
     from: msg.from,
     to: msg.to,
     body: msg.body,
     status: msg.status,
-    direction: msg.direction
+    direction: msg.direction === 'inbound' ? 'inbound' : 'outbound'
   }
 }
 
-exports.webhook = function (msg) {
+exports.fromTwilioWebhook = function (msg) {
+  const date = new Date()
   return {
-    id: msg.SmsSid,
-    date: (new Date()).toISOString(),
+    _id: `msg-${date.getTime()}-${msg.sid}`,
+    providerId: msg.SmsSid,
+    date: date.toISOString(),
     from: msg.From,
     to: msg.To,
     body: msg.Body,
     status: msg.SmsStatus,
     direction: 'inbound'
+  }
+}
+
+exports.toTwilioRest = function (msg) {
+  return {
+    To: msg.to,
+    body: msg.body
   }
 }

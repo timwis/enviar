@@ -72,9 +72,9 @@ module.exports = (state, prev, send) => {
         </div>
       </div>
     </div>`
-  
+
   function onCompose (data) {
-    data.To = activePhone
+    data.to = activePhone
     send('outbound', data)
   }
 }

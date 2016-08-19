@@ -22,6 +22,8 @@
     "browserify": "^13.1.0",
     "choo": "^3.2.0",
     "choo-log": "^1.4.0",
+    "couchdb-configure": "^1.5.1",
+    "couchdb-push": "^2.3.1",
     "dotenv": "^2.0.0",
     "envify": "^3.4.1",
     "insert-css": "^0.2.0",
@@ -38,7 +40,6 @@
   },
   "devDependencies": {
     "ava": "^0.16.0",
-    "couchdb-push": "^2.3.1",
     "jsdom": "^9.4.1",
     "jsdom-global": "^2.0.0"
   }

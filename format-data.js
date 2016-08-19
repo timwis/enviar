@@ -15,7 +15,7 @@ exports.fromTwilioRest = function (msg) {
 exports.fromTwilioWebhook = function (msg) {
   const date = new Date()
   return {
-    _id: `msg-${date.getTime()}-${msg.sid}`,
+    _id: `msg-${date.getTime()}-${msg.SmsSid}`,
     providerId: msg.SmsSid,
     date: date.toISOString(),
     from: msg.From,

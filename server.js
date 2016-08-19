@@ -23,11 +23,24 @@ const formatData = require('./format-data')
  * CouchDB pre-loading
  */
 const messagesDB = nano.db.use('messages')
-messagesDB.list({ limit: 1, include_docs: true, startkey: 'msg-' }, (err, body) => {
+messagesDB.list({
+  descending: true,
+  limit: 1,
+  include_docs: true,
+  endkey: 'msg-' // _ comes before m in ASCII sort
+}, (err, body) => {
   if (err) return console.error(err)
   if (body.rows.length) {
     // fetch messages since body.rows[0].smsid
     console.log('most recent message', body.rows[0])
+    client.messages.get({ 'DateSent>': body.rows[0].doc.date }, (err, messages) => {
+      if (err) return console.error('Error fetching recent messages from twilio')
+      const formattedMessages = messages.messages.map(formatData.fromTwilioRest)
+      messagesDB.bulk({ docs: formattedMessages }, (err, body) => {
+        if (err) return console.error('Error inserting recent messages into database', err)
+        console.log(body)
+      })
+    })
   } else {
     // fresh db - seed a few pages of messages
     console.log('no messages in db')
@@ -51,7 +64,6 @@ feed.on('change', (change) => {
     if (err) return console.error('Error sending message to provider')
 
     const formattedResponse = formatData.fromTwilioRest(response)
-    // todo: update doc w/response
     formattedResponse._id = change.id
     formattedResponse._rev = change.doc._rev
     console.log('sent', formattedResponse)

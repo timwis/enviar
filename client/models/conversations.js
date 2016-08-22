@@ -1,9 +1,7 @@
-const http = require('choo/http')
 const groupBy = require('lodash/groupby')
 const keyBy = require('lodash/keyby')
 const merge = require('lodash/merge')
 const cloneDeep = require('lodash/clonedeep')
-const extend = require('xtend')
 const PouchDB = require('pouchdb')
 const shortid = require('shortid')
 

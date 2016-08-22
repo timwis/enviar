@@ -1,7 +1,7 @@
 require('dotenv').config({silent: true})
-const ACCOUNT_SID = process.env.ACCOUNT_SID
-const AUTH_TOKEN = process.env.AUTH_TOKEN
-const PHONE = process.env.PHONE
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN
+const TWILIO_PHONE = process.env.TWILIO_PHONE
 const PORT = process.env.PORT || 3000
 const DEV = process.env.NODE_ENV === 'development'
 const APP_TITLE = process.env.APP_TITLE || require('./package.json').name
@@ -22,10 +22,10 @@ let twilio
 if (DEV) {
   twilio = require('./fixtures/twilio/stub')
 } else {
-  assert(ACCOUNT_SID, 'ACCOUNT_SID environment variable is not defined')
-  assert(AUTH_TOKEN, 'AUTH_TOKEN environment variable is not defined')
-  assert(PHONE, 'PHONE environment variable is not defined')
-  twilio = require('twilio')(ACCOUNT_SID, AUTH_TOKEN)
+  assert(TWILIO_ACCOUNT_SID, 'TWILIO_ACCOUNT_SID environment variable is not defined')
+  assert(TWILIO_AUTH_TOKEN, 'TWILIO_AUTH_TOKEN environment variable is not defined')
+  assert(TWILIO_PHONE, 'TWILIO_PHONE environment variable is not defined')
+  twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 }
 
 // Setup CouchDB
@@ -79,7 +79,7 @@ function followPendingOutbound (db) {
 
   feed.on('change', (change) => {
     const payload = formatData.toTwilioRest(change.doc)
-    payload.From = PHONE
+    payload.From = TWILIO_PHONE
 
     twilio.messages.post(payload, (err, response) => {
       if (err) return console.error('Error sending message to provider')

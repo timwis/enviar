@@ -4,8 +4,19 @@ Chat interface for SMS / text messages.
 
 ![screenshot](http://i.imgur.com/XMrf0Rd.png)
 
+## Installation
+1. Clone this repo using `git clone https://github.com/timwis/enviar.git`
+2. Install node dependencies via `npm install`
+3. Copy `.env.sample` to `.env`
+
+### CouchDB
+This application uses CouchDB to store messages. Follow their [install docs](http://docs.couchdb.org/en/1.6.1/install/index.html)
+to run CouchDB locally or setup a free hosted instance with [CloudAnt](https://cloudant.com/).
+
+4. Fill in your the `COUCH_DB_URL` in `.env` (ie. `http://localhost:5984`)
+5. Configure the database using `npm run setup-db`
+
 ## Usage
-Install dependencies via `npm install`
 
 ### Development mode
 1. Run the server using `NODE_ENV=development npm start`
@@ -20,7 +31,7 @@ curl -X POST -d 'SmsSid=123456&From=%2B12597150948&Body=hello' http://localhost:
 ```
 
 ### Production mode
-1. Copy `.env.sample` to `.env` and fill in twilio credentials
+1. Fill in your twilio credentials in `.env`
 2. Run the server using `npm start`
 3. Point twilio's incoming message webhook to `http://<your-server>/api/inbound` (check out [ngrok](https://ngrok.com/) to expose your localhost)
 

@@ -13,12 +13,13 @@ require('insert-css')(`
   }
   body {
     font-family: 'Roboto', sans-serif;
+    overflow: hidden;
   }
 `)
 
 const app = choo()
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   const log = require('choo-log')
   app.use(log())
 }

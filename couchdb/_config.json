@@ -1,5 +1,4 @@
-
-{   
+{
   "httpd": {
     "enable_cors": true
   },

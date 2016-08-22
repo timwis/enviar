@@ -51,6 +51,7 @@ module.exports = {
         live: true,
         include_docs: true
       }).on('change', (change) => {
+        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
         console.log('change', change)
         send('receive', [change.doc], done)
       })

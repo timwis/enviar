@@ -102,7 +102,7 @@ function followPendingOutbound (db) {
 function setupStaticRouter () {
   const router = serverRouter()
 
-  const html = bankai.html({ APP_TITLE })
+  const html = bankai.html({ title: APP_TITLE })
   router.on('/', wrapHandler(html))
 
   const css = bankai.css()

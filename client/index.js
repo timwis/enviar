@@ -4,8 +4,10 @@ const css = require('sheetify')
 const chat = require('./pages/chat')
 
 css('purecss/build/base')
+css('purecss/build/forms')
 require('insert-css')(`
   @import url(https://fonts.googleapis.com/css?family=Roboto);
+  @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css);
   html, body {
     height: 100%;
     margin: 0;

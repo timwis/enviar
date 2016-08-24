@@ -1,6 +1,6 @@
 # enviar
 
-Chat interface for SMS / text messages.
+Chat interface for SMS / text messages. **Work in progress**.
 
 ![screenshot](http://i.imgur.com/XMrf0Rd.png)
 

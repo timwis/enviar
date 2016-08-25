@@ -2,6 +2,7 @@ const groupBy = require('lodash/groupby')
 const keyBy = require('lodash/keyby')
 const merge = require('lodash/merge')
 const cloneDeep = require('lodash/clonedeep')
+const omit = require('lodash/omit')
 const PouchDB = require('pouchdb')
 const shortid = require('shortid')
 const series = require('run-series')
@@ -27,6 +28,15 @@ module.exports = {
       const mergedConversations = merge(oldConversations, newConversations)
       return { conversations: mergedConversations }
     },
+    remove: (messageId, state) => {
+      const newConversations = extend(state.conversations)
+      for (let phone in state.conversations) {
+        if (state.conversations[phone][messageId]) {
+          newConversations[phone] = omit(state.conversations[phone], messageId)
+        }
+      }
+      return { conversations: newConversations }
+    },
     setAddingConversation: (isAddingConversation, state) => {
       return { isAddingConversation }
     },
@@ -50,7 +60,7 @@ module.exports = {
     },
     outbound: (data, state, send, done) => {
       console.log('sending message: ' + data.body)
-      data._id = `msg-${Date.now()}-${shortid.generate()}`
+      data._id = `draft-${Date.now()}-${shortid.generate()}`
       data.direction = 'outbound'
       db.put(data, (err, response) => {
         if (err) return done(new Error('Error posting doc'))
@@ -76,9 +86,13 @@ module.exports = {
         live: true,
         include_docs: true
       }).on('change', (change) => {
-        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
+        if (!['msg', 'draft'].includes(change.id.split('-')[0])) return // filter out design docs
         console.log('change', change)
-        send('receive', [change.doc], done)
+        if (change.deleted) {
+          send('remove', change.id, done)
+        } else {
+          send('receive', [change.doc], done)
+        }
       })
     }
   }

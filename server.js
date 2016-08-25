@@ -32,7 +32,7 @@ if (DEV) {
 assert(COUCH_DB_URL, 'COUCH_DB_URL environment variable is not defined')
 const db = nano(COUCH_DB_URL).use('messages')
 seedWithMessages(db)
-followPendingOutbound(db)
+followDrafts(db)
 
 // Setup HTTP server
 const router = setupStaticRouter()
@@ -71,13 +71,15 @@ function seedWithMessages (db) {
 }
 
 // Subscribe to pending outbound messages and send them to twilio
-function followPendingOutbound (db) {
+function followDrafts (db) {
   const feed = db.follow({
-    filter: 'messages/pending-outbound',
+    filter: 'messages/drafts',
     include_docs: true
   })
 
   feed.on('change', (change) => {
+    if (change.deleted) return
+
     const payload = formatData.toTwilioRest(change.doc)
     payload.From = TWILIO_PHONE
 
@@ -85,12 +87,13 @@ function followPendingOutbound (db) {
       if (err) return console.error('Error sending message to provider')
 
       const formattedResponse = formatData.fromTwilioRest(response)
-      formattedResponse._id = change.id
-      formattedResponse._rev = change.doc._rev
       console.log('outbound', formattedResponse)
 
       db.insert(formattedResponse, (err, body) => {
-        if (err) return console.error('Error updating message in db', err)
+        if (err) return console.error('Error inserting sent message into db', err)
+      })
+      db.destroy(change.id, change.doc._rev, (err, body) => {
+        if (err) return console.error('Error removing draft in db', err)
       })
     })
   })

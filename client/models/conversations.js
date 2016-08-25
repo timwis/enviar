@@ -4,6 +4,8 @@ const merge = require('lodash/merge')
 const cloneDeep = require('lodash/clonedeep')
 const PouchDB = require('pouchdb')
 const shortid = require('shortid')
+const series = require('run-series')
+const extend = require('xtend')
 
 if (process.env.NODE_ENV === 'development') window.PouchDB = PouchDB
 
@@ -15,7 +17,8 @@ db.sync(process.env.COUCH_DB_URL + '/messages', {
 
 module.exports = {
   state: {
-    conversations: {}
+    conversations: {},
+    isAddingConversation: false
   },
   reducers: {
     receive: (messages, state) => {
@@ -23,6 +26,17 @@ module.exports = {
       const oldConversations = cloneDeep(state.conversations) // because merge mutates
       const mergedConversations = merge(oldConversations, newConversations)
       return { conversations: mergedConversations }
+    },
+    setAddingConversation: (isAddingConversation, state) => {
+      return { isAddingConversation }
+    },
+    addConversation: (phone, state) => {
+      if (!state.conversations[phone]) {
+        const emptyConvo = {}
+        emptyConvo[phone] = {}
+        const newConversations = extend(state.conversations, emptyConvo)
+        return { conversations: newConversations }
+      }
     }
   },
   effects: {
@@ -42,6 +56,17 @@ module.exports = {
         if (err) return done(new Error('Error posting doc'))
         done() // if outbound is successful, new message is emitted & received via subscription
       })
+    },
+    addAndRedirect: (phone, state, send, done) => {
+      series([
+        (cb) => send('setAddingConversation', false, cb),
+        (cb) => send('addConversation', phone, cb),
+        (cb) => {
+          const location = '/' + phone
+          window.history.pushState({}, null, location)
+          send('location:setLocation', { location }, cb)
+        }
+      ])
     }
   },
   subscriptions: {

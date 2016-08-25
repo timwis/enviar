@@ -6,7 +6,7 @@ const sortBy = require('lodash/sortby')
 const ConversationList = require('../components/conversation-list')
 const Messages = require('../components/messages')
 const Compose = require('../components/compose')
-const formatPhone = require('../util').formatPhone
+const { formatPhone, validatePhone } = require('../util')
 
 const prefix = css`
   :host {
@@ -14,7 +14,7 @@ const prefix = css`
     display: flex;
   }
   .left {
-    width: 20%;
+    width: 200px;
     overflow-y: auto;
     background-color: #2F4550;
   }
@@ -44,7 +44,7 @@ const prefix = css`
 `
 
 module.exports = (state, prev, send) => {
-  const activePhone = state.params.phone
+  const activePhone = state.params && state.params.phone
   let activeConversation, messages
   if (activePhone) {
     activeConversation = state.conversations[activePhone]
@@ -54,11 +54,12 @@ module.exports = (state, prev, send) => {
     }
   }
   const phones = Object.keys(state.conversations)
+  const isAdding = state.isAddingConversation
 
   return html`
     <div onload=${() => send('fetch')} class=${prefix}>
       <div class="left">
-        ${ConversationList(phones, activePhone)}
+        ${ConversationList({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd })}
       </div>
       <div class="right">
         <div class="header">
@@ -76,5 +77,20 @@ module.exports = (state, prev, send) => {
   function onCompose (data) {
     data.to = activePhone
     send('outbound', data)
+  }
+
+  function onClickAdd () {
+    send('setAddingConversation', true)
+  }
+
+  function onSubmitAdd (phone) {
+    const validatedPhone = validatePhone(phone)
+    if (validatedPhone) {
+      send('addAndRedirect', validatedPhone)
+      return true
+    } else {
+      console.log('Invalid phone number')
+      return false
+    }
   }
 }

@@ -1,8 +1,6 @@
 const html = require('choo/html')
 const css = require('sheetify')
 
-css('purecss/build/forms')
-
 const prefix = css`
   :host {
     height: 75%;
@@ -19,7 +17,7 @@ module.exports = (cb) => {
     <form onsubmit=${onSubmit} class="${prefix} pure-form">
       <input id="body" type="text" class="input-reset" placeholder="Send a message...">
     </form>`
-  
+
   function onSubmit (e) {
     const body = e.target.querySelector('#body')
     if (body.value && cb) {

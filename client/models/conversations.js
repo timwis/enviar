@@ -31,10 +31,12 @@ module.exports = {
       return { isAddingConversation }
     },
     addConversation: (phone, state) => {
-      const emptyConvo = {}
-      emptyConvo[phone] = {}
-      const newConversations = extend(state.conversations, emptyConvo)
-      return { conversations: newConversations }
+      if (!state.conversations[phone]) {
+        const emptyConvo = {}
+        emptyConvo[phone] = {}
+        const newConversations = extend(state.conversations, emptyConvo)
+        return { conversations: newConversations }
+      }
     }
   },
   effects: {

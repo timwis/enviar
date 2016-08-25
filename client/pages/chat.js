@@ -6,7 +6,7 @@ const sortBy = require('lodash/sortby')
 const ConversationList = require('../components/conversation-list')
 const Messages = require('../components/messages')
 const Compose = require('../components/compose')
-const formatPhone = require('../util').formatPhone
+const { formatPhone, validatePhone } = require('../util')
 
 const prefix = css`
   :host {
@@ -84,6 +84,13 @@ module.exports = (state, prev, send) => {
   }
 
   function onSubmitAdd (phone) {
-    send('addAndRedirect', phone)
+    const validatedPhone = validatePhone(phone)
+    if (validatedPhone) {
+      send('addAndRedirect', validatedPhone)
+      return true
+    } else {
+      console.log('Invalid phone number')
+      return false
+    }
   }
 }

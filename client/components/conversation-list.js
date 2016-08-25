@@ -67,8 +67,10 @@ module.exports = ({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd }) =>
   function submitAdd (e) {
     const phone = e.target.querySelector('#phone')
     if (phone.value && onSubmitAdd) {
-      onSubmitAdd(phone.value)
-      phone.value = ''
+      if (onSubmitAdd(phone.value)) {
+        // clear value if submit was valid/successful
+        phone.value = ''
+      }
     }
     e.preventDefault()
   }

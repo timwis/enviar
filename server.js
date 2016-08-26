@@ -98,7 +98,7 @@ function seedWithMessages (db) {
 // Subscribe to pending outbound messages and send them to twilio
 function followPendingOutbound (db) {
   const feed = db.follow({
-    filter: 'messages/pending-outbound',
+    filter: 'messages/pendingOutbound',
     include_docs: true
   })
 

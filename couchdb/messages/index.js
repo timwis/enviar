@@ -11,7 +11,7 @@ module.exports = {
     }
   },
   filters: {
-    'pending-outbound': function (doc, req) {
+    pendingOutbound: function (doc, req) {
       return !doc.providerId && doc.direction === 'outbound'
     }
   }

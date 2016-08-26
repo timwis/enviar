@@ -1,8 +1,8 @@
 module.exports = {
   _id: '_design/messages',
   filters: {
-    'pending-outbound': function (doc, req) {
-      return !doc.providerId && doc.direction === 'outbound'
+    drafts: function (doc, req) {
+      return doc._id.split('-')[0] === 'draft'
     }
   }
 }

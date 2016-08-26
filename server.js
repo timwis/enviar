@@ -14,6 +14,7 @@ const browserify = require('browserify')
 const formBody = require('body/form')
 const assert = require('assert')
 const nano = require('nano')
+const keyBy = require('lodash/keyBy')
 
 const formatData = require('./format-data')
 
@@ -63,9 +64,33 @@ function seedWithMessages (db) {
   function formatAndInsert (err, messages) {
     if (err) return console.error('Error fetching messages from twilio')
     const formattedMessages = messages.messages.map(formatData.fromTwilioRest)
-    db.bulk({ docs: formattedMessages }, (err, body) => {
-      if (err) return console.error('Error inserting messages into database', err)
-      console.log(body)
+    const providerIds = formattedMessages.map((msg) => msg.providerId)
+
+    db.view('messages', 'byProviderId', { keys: providerIds }, (err, body) => {
+      if (err) return console.error('Error fetching view', err)
+      const existingByProviderId = keyBy(body.rows, 'key')
+
+      // Find matches from local db. If any changes, get its _id and _rev
+      // to update the record instead of inserting a new one. But if no changes,
+      // just discard the record from the update batch.
+      // If no match, just insert the record as-is.
+      const matchedMessages = formattedMessages.map((msg) => {
+        const match = existingByProviderId[msg.providerId]
+        if (match) {
+          if (msg.status !== match.value.status) {
+            msg._id = match.id
+            msg._rev = match.value._rev
+          } else {
+            msg.noChanges = true
+          }
+        }
+        return msg
+      }).filter((msg) => !msg.noChanges)
+
+      db.bulk({ docs: matchedMessages }, (err, body) => {
+        if (err) return console.error('Error inserting messages into database', err)
+        console.log(body)
+      })
     })
   }
 }

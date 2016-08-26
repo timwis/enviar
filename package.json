@@ -4,7 +4,7 @@
   "description": "Chat interface for SMS / text messages",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/index.js",
     "test": "ava test --verbose",
     "setup-db": "node ./couchdb/bootstrap.js"
   },

@@ -78,7 +78,7 @@ function followDrafts (db) {
   })
 
   feed.on('change', (change) => {
-    if (change.deleted) return
+    if (change.deleted) return // this change feed gets notified of its own work
 
     const payload = formatData.toTwilioRest(change.doc)
     payload.From = TWILIO_PHONE
@@ -89,11 +89,11 @@ function followDrafts (db) {
       const formattedResponse = formatData.fromTwilioRest(response)
       console.log('outbound', formattedResponse)
 
-      db.insert(formattedResponse, (err, body) => {
+      const draftDeletion = { _id: change.id, _rev: change.doc._rev, _deleted: true }
+      const docs = [formattedResponse, draftDeletion]
+
+      db.bulk({ docs }, (err, body) => {
         if (err) return console.error('Error inserting sent message into db', err)
-      })
-      db.destroy(change.id, change.doc._rev, (err, body) => {
-        if (err) return console.error('Error removing draft in db', err)
       })
     })
   })

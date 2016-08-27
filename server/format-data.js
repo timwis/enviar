@@ -1,7 +1,9 @@
+const shortid = require('shortid')
+
 exports.fromTwilioRest = function (msg) {
   const timestamp = Date.parse(msg.dateCreated)
   return {
-    _id: `msg-${timestamp}-${msg.sid}`,
+    _id: `msg-${timestamp}-${shortid.generate()}`,
     providerId: msg.sid,
     date: msg.dateCreated,
     from: msg.from,
@@ -15,7 +17,7 @@ exports.fromTwilioRest = function (msg) {
 exports.fromTwilioWebhook = function (msg) {
   const date = new Date()
   return {
-    _id: `msg-${date.getTime()}-${msg.SmsSid}`,
+    _id: `msg-${date.getTime()}-${shortid.generate()}`,
     providerId: msg.SmsSid,
     date: date.toISOString(),
     from: msg.From,

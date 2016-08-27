@@ -1,0 +1,12 @@
+{
+  "admins": {
+    "names": [],
+    "roles": []
+  },
+  "members": {
+    "names": [],
+    "roles": [
+      "agent"
+    ]
+  }
+}

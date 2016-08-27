@@ -1,6 +1,7 @@
 const serverRouter = require('server-router')
 const bankai = require('bankai')
 const browserify = require('browserify')
+const path = require('path')
 
 module.exports = staticRouter
 
@@ -14,7 +15,8 @@ function staticRouter ({ title, dev }) {
   const css = bankai.css()
   router.on('/bundle.css', wrapHandler(css))
 
-  const js = bankai.js(browserify, __dirname + '/client/index.js', { transform: 'envify', debug: dev })
+  const jsPath = path.resolve(__dirname, '../client/index.js')
+  const js = bankai.js(browserify, jsPath, { transform: 'envify', debug: dev })
   router.on('/bundle.js', wrapHandler(js))
 
   return router

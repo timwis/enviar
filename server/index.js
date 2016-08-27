@@ -4,7 +4,7 @@ const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN
 const TWILIO_PHONE = process.env.TWILIO_PHONE
 const PORT = process.env.PORT || 3000
 const DEV = process.env.NODE_ENV === 'development'
-const APP_TITLE = process.env.APP_TITLE || require('./package.json').name
+const APP_TITLE = process.env.APP_TITLE || require('../package.json').name
 const COUCH_DB_URL = process.env.COUCH_DB_URL
 
 const http = require('http')
@@ -19,7 +19,7 @@ const followOutbound = require('./follow-outbound')
 // Setup twilio client (or stub)
 let twilio
 if (DEV) {
-  twilio = require('./fixtures/twilio/stub')
+  twilio = require('../fixtures/twilio/stub')
 } else {
   assert(TWILIO_ACCOUNT_SID, 'TWILIO_ACCOUNT_SID environment variable is not defined')
   assert(TWILIO_AUTH_TOKEN, 'TWILIO_AUTH_TOKEN environment variable is not defined')

@@ -38,10 +38,12 @@ function seedWithMessages (db, twilio) {
 
       const updateBatch = detectUpdates(fetchedMessages, body.rows)
 
-      db.bulk({ docs: updateBatch }, (err, body) => {
-        if (err) return console.error('Error inserting messages into database', err)
-        console.log(body)
-      })
+      if (updateBatch.length) {
+        db.bulk({ docs: updateBatch }, (err, body) => {
+          if (err) return console.error('Error inserting messages into database', err)
+          console.log(body)
+        })
+      }
     })
   }
 }

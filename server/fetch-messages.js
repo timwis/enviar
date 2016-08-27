@@ -10,23 +10,25 @@ function seedWithMessages (db, twilio) {
     descending: true,
     limit: 1,
     include_docs: true,
-    endkey: 'msg-' // _ comes before m in ASCII sort
+    endkey: 'msg-' // '_' comes before 'm' in ASCII sort
   }, (err, body) => {
     if (err) return console.error(err)
 
     if (body.rows.length) {
       // If db already contains message records, fetch records since latest one
       console.log('most recent message', body.rows[0])
-      twilio.messages.get({ 'DateSent>': body.rows[0].doc.date }, formatAndInsert)
+      const mostRecentDate = body.rows[0].doc.date
+      twilio.messages.get({ 'DateSent>': mostRecentDate }, formatAndInsert)
     } else {
       // Otherwise it's a fresh db - fetch a page of messages
-      console.log('no messages in db')
+      console.log('no messages in db, seeding')
       twilio.messages.get({}, formatAndInsert)
     }
   })
 
   function formatAndInsert (err, response) {
     if (err) return console.error('Error fetching messages from twilio')
+
     const fetchedMessages = response.messages.map(formatData.fromTwilioRest)
     const fetchedProviderIds = fetchedMessages.map((msg) => msg.providerId)
 

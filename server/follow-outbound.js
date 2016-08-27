@@ -13,16 +13,19 @@ function followOutbound (db, twilio, phone) {
     const payload = formatData.toTwilioRest(change.doc)
     payload.From = phone
 
+    // Dispatch to twilio
     twilio.messages.post(payload, (err, response) => {
       if (err) return console.error('Error sending message to provider')
 
       const formattedResponse = formatData.fromTwilioRest(response)
+
+      // Update existing doc instead of inserting a new one
       formattedResponse._id = change.id
       formattedResponse._rev = change.doc._rev
-      console.log('outbound', formattedResponse)
 
       db.insert(formattedResponse, (err, body) => {
         if (err) return console.error('Error updating message in db', err)
+        console.log('outbound', formattedResponse)
       })
     })
   })

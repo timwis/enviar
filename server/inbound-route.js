@@ -15,7 +15,6 @@ function inboundRoute (router, db) {
         }
 
         const formattedMessage = formatData.fromTwilioWebhook(body)
-        console.log('inbound', formattedMessage)
 
         db.insert(formattedMessage, (err, body) => {
           if (err) {
@@ -23,6 +22,7 @@ function inboundRoute (router, db) {
             console.error('Error inserting inbound message into db', err)
             return
           }
+          console.log('inbound', formattedMessage)
           res.end()
         })
       })

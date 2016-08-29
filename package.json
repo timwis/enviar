@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "ava test --verbose",
-    "setup-db": "couchdb-bootstrap"
+    "bootstrap": "node database/bootstrap.js"
   },
   "author": "timwis <tim@timwis.com>",
   "license": "MIT",

@@ -13,8 +13,8 @@ Chat interface for SMS / text messages. **Work in progress**.
 This application uses CouchDB to store messages. Follow their [install docs](http://docs.couchdb.org/en/1.6.1/install/index.html)
 to run CouchDB locally or setup a free hosted instance with [CloudAnt](https://cloudant.com/).
 
-4. Fill in your the `COUCH_DB_URL` in `.env` (ie. `http://admin:pass@localhost:5984`)
-5. Configure the database using `npm run setup-db -- <couchdb url> ./couchdb`
+4. Fill in your the `COUCH_DB_URL` in `.env` (ie. `http://localhost:5984`)
+5. Configure the database using `npm run bootstrap`
 
 ## Usage
 

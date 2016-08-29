@@ -5,11 +5,12 @@ const COUCHDB_PASS = process.env.COUCHDB_PASS
 
 const assert = require('assert')
 const url = require('url')
+const path = require('path')
 const bootstrap = require('couchdb-bootstrap')
 
 assert(COUCHDB_URL, 'COUCHDB_URL environment variable is not set')
 const authUrl = COUCHDB_USER ? addAuthToUrl(COUCHDB_URL, COUCHDB_USER, COUCHDB_PASS) : COUCHDB_URL
-const configUrl = __dirname + '/couchdb'
+const configUrl = path.join(__dirname, '/couchdb')
 
 bootstrap(authUrl, configUrl, { index: true }, (err, body) => {
   if (err) {

@@ -2,6 +2,7 @@ const html = require('choo/html')
 const css = require('sheetify')
 const values = require('lodash/values')
 const sortBy = require('lodash/sortby')
+const groupBy = require('lodash/groupby')
 
 const ConversationList = require('../components/conversation-list')
 const LogoArea = require('../components/logo-area')
@@ -47,17 +48,16 @@ const prefix = css`
 `
 
 module.exports = (state, prev, send) => {
-  const activePhone = state.params && state.params.phone
-  let activeConversation, messages
-  if (activePhone) {
-    activeConversation = state.conversations[activePhone]
-    if (activeConversation) {
-      const sortedConversation = sortBy(values(activeConversation), 'date')
-      messages = Messages(activePhone, sortedConversation)
-    }
-  }
-  const phones = Object.keys(state.conversations)
+  let messages
   const isAdding = state.isAddingConversation
+  const activePhone = state.params && state.params.phone
+  const messagesArray = values(state.messages)
+  const conversations = groupBy(messagesArray, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
+  const phones = Object.keys(conversations)
+  if (activePhone && conversations[activePhone]) {
+    const activeConversation = sortBy(conversations[activePhone], 'date')
+    messages = Messages(activePhone, activeConversation)
+  }
 
   return html`
     <div onload=${() => send('initialize')} class=${prefix}>

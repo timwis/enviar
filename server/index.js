@@ -22,7 +22,7 @@ const followOutbound = require('./follow-outbound')
 // Setup twilio client (or stub)
 let twilio
 if (DEV) {
-  twilio = require('../fixtures/twilio/stub')
+  twilio = require('../test/fixtures/twilio/stub')
 } else {
   assert(TWILIO_ACCOUNT_SID, 'TWILIO_ACCOUNT_SID environment variable is not defined')
   assert(TWILIO_AUTH_TOKEN, 'TWILIO_AUTH_TOKEN environment variable is not defined')

@@ -4,7 +4,7 @@ require('jsdom-global')()
 
 const model = require('../client/models/conversations')
 const chat = require('../client/pages/chat')
-const messagesFixture = require('../fixtures/formatted/messages.json')
+const messagesFixture = require('./fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
 test('reducers : receive : group by message id', (t) => {

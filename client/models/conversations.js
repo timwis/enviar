@@ -55,8 +55,7 @@ module.exports = {
           // Logged in
           series([
             (cb) => send('setUser', body.userCtx, cb),
-            (cb) => send('fetch', cb),
-            (cb) => send('watchChanges', cb)
+            (cb) => send('fetch', cb)
           ], done)
         }
       })
@@ -67,17 +66,6 @@ module.exports = {
         console.log(result)
         const messages = result.rows.map((row) => row.doc)
         send('receive', messages, done)
-      })
-    },
-    watchChanges: (data, state, send, done) => {
-      db.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
-        console.log('change', change)
-        send('receive', [change.doc], done)
       })
     },
     outbound: (data, state, send, done) => {
@@ -104,7 +92,7 @@ module.exports = {
       db.login(username, password, (err, body) => {
         if (err) return console.error('Login error', err)
         console.log(body)
-        send('redirect', '/', done)
+        window.location.href = '/' // force refresh to call subscription again
       })
     },
     logout: (data, state, send, done) => {
@@ -116,6 +104,19 @@ module.exports = {
     redirect: (path, state, send, done) => {
       window.history.pushState({}, null, path)
       send('location:setLocation', { location: path }, done)
+    }
+  },
+  subscriptions: {
+    receiveMessages: (send, done) => {
+      db.changes({
+        since: 'now',
+        live: true,
+        include_docs: true
+      }).on('change', (change) => {
+        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
+        console.log('change', change)
+        send('receive', [change.doc], done)
+      })
     }
   }
 }

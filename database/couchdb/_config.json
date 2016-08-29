@@ -1,4 +1,7 @@
 {
+  "couch_httpd_auth": {
+    "timeout": 7200
+  },
   "httpd": {
     "enable_cors": true
   },

@@ -4,9 +4,12 @@ const values = require('lodash/values')
 const sortBy = require('lodash/sortby')
 
 const ConversationList = require('../components/conversation-list')
+const LogoArea = require('../components/logo-area')
 const Messages = require('../components/messages')
 const Compose = require('../components/compose')
 const { formatPhone, validatePhone } = require('../util')
+
+const title = process.env.APP_TITLE || require('../../package.json').name
 
 const prefix = css`
   :host {
@@ -57,8 +60,9 @@ module.exports = (state, prev, send) => {
   const isAdding = state.isAddingConversation
 
   return html`
-    <div onload=${() => send('fetch')} class=${prefix}>
+    <div onload=${() => send('initialize')} class=${prefix}>
       <div class="left">
+        ${LogoArea(title, state.user, onLogout)}
         ${ConversationList({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd })}
       </div>
       <div class="right">
@@ -92,5 +96,9 @@ module.exports = (state, prev, send) => {
       console.log('Invalid phone number')
       return false
     }
+  }
+
+  function onLogout () {
+    send('logout')
   }
 }

@@ -5,11 +5,14 @@ const TWILIO_PHONE = process.env.TWILIO_PHONE
 const PORT = process.env.PORT || 3000
 const DEV = process.env.NODE_ENV === 'development'
 const APP_TITLE = process.env.APP_TITLE || require('../package.json').name
-const COUCH_DB_URL = process.env.COUCH_DB_URL
+const COUCHDB_URL = process.env.COUCHDB_URL
+const COUCHDB_USER = process.env.COUCHDB_USER
+const COUCHDB_PASS = process.env.COUCHDB_PASS
 
 const http = require('http')
 const assert = require('assert')
 const nano = require('nano')
+const url = require('url')
 
 const fetchMessages = require('./fetch-messages')
 const staticRouter = require('./static-router')
@@ -28,8 +31,9 @@ if (DEV) {
 }
 
 // Setup CouchDB
-assert(COUCH_DB_URL, 'COUCH_DB_URL environment variable is not defined')
-const db = nano(COUCH_DB_URL).use('messages')
+assert(COUCHDB_URL, 'COUCHDB_URL environment variable is not defined')
+const authUrl = addAuthToUrl(COUCHDB_URL, COUCHDB_USER, COUCHDB_PASS)
+const db = nano(authUrl).use('messages')
 fetchMessages(db, twilio)
 followOutbound(db, twilio, TWILIO_PHONE)
 
@@ -37,3 +41,9 @@ followOutbound(db, twilio, TWILIO_PHONE)
 const router = staticRouter({ title: APP_TITLE, dev: DEV })
 inboundRoute(router, db)
 http.createServer(router).listen(PORT, () => console.log('Listening on port', PORT))
+
+function addAuthToUrl (plainUrl, user, pass) {
+  const urlObj = url.parse(plainUrl)
+  urlObj.auth = user + ':' + pass
+  return url.format(urlObj)
+}

@@ -13,8 +13,11 @@ Chat interface for SMS / text messages. **Work in progress**.
 This application uses CouchDB to store messages. Follow their [install docs](http://docs.couchdb.org/en/1.6.1/install/index.html)
 to run CouchDB locally or setup a free hosted instance with [CloudAnt](https://cloudant.com/).
 
-4. Fill in your the `COUCH_DB_URL` in `.env` (ie. `http://localhost:5984`)
-5. Configure the database using `npm run bootstrap`
+4. Fill in your the `COUCHDB_URL` in `.env` (ie. `http://localhost:5984`)
+5. By default, couchdb considers everyone an admin. If you have disabled this setting (recommended for production)
+and have an admin user setup, fill in its credentials in the `COUCHDB_USER` and `COUCHDB_PASS` variables. Otherwise
+continue without these.
+6. Configure the database using `npm run bootstrap`
 
 ## Usage
 
@@ -36,5 +39,3 @@ curl -X POST -d 'SmsSid=123456&From=%2B12597150948&Body=hello' http://localhost:
 3. Point twilio's incoming message webhook to `http://<your-server>/api/inbound` (check out [ngrok](https://ngrok.com/) to expose your localhost)
 
 Access the server at `http://localhost:3000`
-
-Note that there is no authentication built [yet](issues/7), so be careful exposing this publicly.

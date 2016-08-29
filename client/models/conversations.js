@@ -10,9 +10,8 @@ const extend = require('xtend')
 
 if (process.env.NODE_ENV === 'development') window.PouchDB = PouchDB
 
-const remoteUrl = process.env.COUCHDB_URL + '/messages'
-const remoteDB = new PouchDB(remoteUrl, { skipSetup: true })
-const localDB = new PouchDB('messages')
+const dbURL = process.env.COUCHDB_URL + '/messages'
+const db = new PouchDB(dbURL, { skipSetup: true })
 
 module.exports = {
   state: {
@@ -44,7 +43,7 @@ module.exports = {
   },
   effects: {
     initialize: (data, state, send, done) => {
-      remoteDB.getSession((err, body) => {
+      db.getSession((err, body) => {
         if (err) {
           // Error with request
           return done(new Error('Error getting current session'))
@@ -54,39 +53,38 @@ module.exports = {
           send('redirect', path, done)
         } else {
           // Logged in
-          const databases = { local: localDB, remote: remoteDB }
           series([
             (cb) => send('setUser', body.userCtx, cb),
-            (cb) => send('syncDatabases', databases, cb),
-            (cb) => send('fetch', cb)
+            (cb) => send('fetch', cb),
+            (cb) => send('watchChanges', cb)
           ], done)
         }
       })
     },
-    syncDatabases: (databases, state, send, done) => {
-      PouchDB.sync(databases.local, databases.remote, {
-        live: true,
-        retry: true
-      })
-      .on('complete', function () {
-        console.log('complete callback')
-      })
-      .once('paused', done)
-      .once('error', done)
-    },
     fetch: (data, state, send, done) => {
-      localDB.allDocs({ include_docs: true, startkey: 'msg-' }, (err, result) => {
+      db.allDocs({ include_docs: true, startkey: 'msg-' }, (err, result) => {
         if (err) return console.error('Error fetching docs', err)
         console.log(result)
         const messages = result.rows.map((row) => row.doc)
         send('receive', messages, done)
       })
     },
+    watchChanges: (data, state, send, done) => {
+      db.changes({
+        since: 'now',
+        live: true,
+        include_docs: true
+      }).on('change', (change) => {
+        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
+        console.log('change', change)
+        send('receive', [change.doc], done)
+      })
+    },
     outbound: (data, state, send, done) => {
       console.log('sending message: ' + data.body)
       data._id = `msg-${Date.now()}-${shortid.generate()}`
       data.direction = 'outbound'
-      localDB.put(data, (err, response) => {
+      db.put(data, (err, response) => {
         if (err) return done(new Error('Error posting doc'))
         done() // if outbound is successful, new message is emitted & received via subscription
       })
@@ -103,14 +101,14 @@ module.exports = {
     },
     login: (data, state, send, done) => {
       const { username, password } = data
-      remoteDB.login(username, password, (err, body) => {
+      db.login(username, password, (err, body) => {
         if (err) return console.error('Login error', err)
         console.log(body)
         send('redirect', '/', done)
       })
     },
     logout: (data, state, send, done) => {
-      remoteDB.logout((err) => {
+      db.logout((err) => {
         if (err) return done(new Error('Error logging out'))
         send('redirect', '/login', done)
       })
@@ -118,19 +116,6 @@ module.exports = {
     redirect: (path, state, send, done) => {
       window.history.pushState({}, null, path)
       send('location:setLocation', { location: path }, done)
-    }
-  },
-  subscriptions: {
-    receiveMessages: (send, done) => {
-      localDB.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
-        console.log('change', change)
-        send('receive', [change.doc], done)
-      })
     }
   }
 }

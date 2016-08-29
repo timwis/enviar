@@ -18,7 +18,7 @@ const prefix = css`
     text-transform: inherit;
   }`
 
-module.exports = (title, user, onLogout) => {
+module.exports = (title, user = {}, onLogout) => {
   const logoutSuffix = user.name && `as ${user.name}`
   return html`
     <div class="pure-menu ${prefix}">

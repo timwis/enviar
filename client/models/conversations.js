@@ -1,7 +1,4 @@
-const groupBy = require('lodash/groupby')
 const keyBy = require('lodash/keyby')
-const merge = require('lodash/merge')
-const cloneDeep = require('lodash/clonedeep')
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-authentication'))
 const shortid = require('shortid')
@@ -16,26 +13,23 @@ const db = new PouchDB(dbURL, { skipSetup: true })
 module.exports = {
   state: {
     user: {},
-    conversations: {},
+    messages: {},
     isAddingConversation: false
   },
   reducers: {
     receive: (messages, state) => {
-      const newConversations = createIndexes(messages)
-      const oldConversations = cloneDeep(state.conversations) // because merge mutates
-      const mergedConversations = merge(oldConversations, newConversations)
-      return { conversations: mergedConversations }
+      const keyedMessages = keyBy(messages, '_id')
+      const newMessages = extend(state.messages, keyedMessages)
+      return { messages: newMessages }
     },
+    // receive: (messages, state) => {
+    //   const newConversations = createIndexes(messages)
+    //   const oldConversations = cloneDeep(state.conversations) // because merge mutates
+    //   const mergedConversations = merge(oldConversations, newConversations)
+    //   return { conversations: mergedConversations }
+    // },
     setAddingConversation: (isAddingConversation, state) => {
       return { isAddingConversation }
-    },
-    addConversation: (phone, state) => {
-      if (!state.conversations[phone]) {
-        const emptyConvo = {}
-        emptyConvo[phone] = {}
-        const newConversations = extend(state.conversations, emptyConvo)
-        return { conversations: newConversations }
-      }
     },
     setUser: (userCtx, state) => {
       return { user: userCtx }
@@ -80,7 +74,6 @@ module.exports = {
     addAndRedirect: (phone, state, send, done) => {
       series([
         (cb) => send('setAddingConversation', false, cb),
-        (cb) => send('addConversation', phone, cb),
         (cb) => {
           const path = '/' + phone
           send('redirect', path, cb)
@@ -121,11 +114,11 @@ module.exports = {
   }
 }
 
-function createIndexes (messages) {
-  const convosByPhone = groupBy(messages, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
-  const convosByPhoneByID = {}
-  for (let phone in convosByPhone) {
-    convosByPhoneByID[phone] = keyBy(convosByPhone[phone], '_id')
-  }
-  return convosByPhoneByID
-}
+// function createIndexes (messages) {
+//   const convosByPhone = groupBy(messages, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
+//   const convosByPhoneByID = {}
+//   for (let phone in convosByPhone) {
+//     convosByPhoneByID[phone] = keyBy(convosByPhone[phone], '_id')
+//   }
+//   return convosByPhoneByID
+// }

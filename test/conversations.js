@@ -4,74 +4,59 @@ require('jsdom-global')()
 
 const model = require('../client/models/conversations')
 const chat = require('../client/pages/chat')
-const formatPhone = require('../client/util').formatPhone
 const messagesFixture = require('../fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
-test('reducers : receive : group by convo and message id', (t) => {
+test('reducers : receive : group by message id', (t) => {
   const state = model.reducers.receive(messagesFixture, {})
-  const keys = Object.keys(state.conversations)
-  t.is(keys.length, 8, 'list has correct number of convos')
-
-  const convo = state.conversations[samplePhone]
-  const convoKeys = Object.keys(convo)
-  t.is(convoKeys.length, 4, 'convo has correct number of messages')
+  const keys = Object.keys(state.messages)
+  t.is(keys.length, 50, 'messages has correct number of keys')
 })
 
-test('reducers : receive : new convo merged into existing list', (t) => {
-  const newPhone = '+11234567'
+test('pages : chat : group messages by conversation', (t) => {
   const state = model.reducers.receive(messagesFixture, {})
-  const numConvosBefore = Object.keys(state.conversations).length
+  const send = () => {}
+  const view = chat(state, {}, send)
 
-  const newMsg = {
-    id: '1234',
-    date: (new Date()).toISOString(),
-    from: newPhone,
-    body: 'Hello, world',
-    direction: 'inbound'
-  }
-
-  const newState = model.reducers.receive([newMsg], state)
-  const numConvosAfter = Object.keys(newState.conversations).length
-  const numMessages = Object.keys(newState.conversations[newPhone]).length
-
-  t.is(numConvosAfter, numConvosBefore + 1, 'one more convo')
-  t.is(numMessages, 1, 'one message')
+  const convoLinks = view.querySelector('#conversations').children
+  t.is(convoLinks.length, 8, 'correct number of conversation links')
 })
 
-test('reducers : receive : new message merged into existing list', (t) => {
+test('pages : chat : show active conversation messages', (t) => {
   const state = model.reducers.receive(messagesFixture, {})
-  const numConvosBefore = Object.keys(state.conversations).length
-  const numMessagesBefore = Object.keys(state.conversations[samplePhone]).length
+  state.params = { phone: samplePhone }
+  const send = () => {}
+  const view = chat(state, {}, send)
+
+  const messageItems = view.querySelector('#messages').children
+  t.is(messageItems.length, 4, 'correct number of messages')
+})
+
+test('pages : chat : new message merged into existing list', (t) => {
+  const stateBefore = model.reducers.receive(messagesFixture, {})
+  stateBefore.params = { phone: samplePhone }
+  const send = () => {}
+  const viewBefore = chat(stateBefore, {}, send)
+
+  const numConvosBefore = viewBefore.querySelector('#conversations').children.length
+  const numMessagesBefore = viewBefore.querySelector('#messages').children.length
 
   const newMsg = {
-    id: '1234',
+    _id: '1234',
     date: (new Date()).toISOString(),
     from: samplePhone,
     body: 'Hello, world',
     direction: 'inbound'
   }
 
-  const newState = model.reducers.receive([newMsg], state)
-  const numConvosAfter = Object.keys(newState.conversations).length
-  const numMessagesAfter = Object.keys(newState.conversations[samplePhone]).length
+  const stateAfter = model.reducers.receive([newMsg], stateBefore)
+  stateAfter.params = { phone: samplePhone }
+  const viewAfter = chat(stateAfter, {}, send)
+  const numConvosAfter = viewAfter.querySelector('#conversations').children.length
+  const numMessagesAfter = viewAfter.querySelector('#messages').children.length
 
   t.is(numConvosAfter, numConvosBefore, 'same number of convos')
   t.is(numMessagesAfter, numMessagesBefore + 1, 'one more message')
-})
-
-test('reducers : receive : sort convo list', (t) => {
-  const state = model.reducers.receive(messagesFixture, {})
-  state.params = { phone: samplePhone }
-  const send = () => {}
-  const view = chat(state, {}, send)
-
-  const convos = view.querySelector('#conversations').children
-  t.is(convos.length, 8, 'list has correct number of convos')
-
-  const firstMsg = sortBy(messagesFixture, 'date').reverse()[0]
-  const firstConvo = convos[0].querySelector('a').textContent.trim()
-  t.true(firstConvo === formatPhone(firstMsg.to) || firstConvo === formatPhone(firstMsg.from), 'first convo is most recent')
 })
 
 test('reducers : receive : sort messages list', (t) => {
@@ -90,5 +75,5 @@ test('reducers : receive : sort messages list', (t) => {
 
   const latestUIMessageBody = latestUIMessage.querySelector('.content p').textContent.trim()
   const latestFixtureBody = latestRelevantFixture.body
-  t.is(latestUIMessageBody, latestFixtureBody)
+  t.is(latestUIMessageBody, latestFixtureBody, 'last message is most recent')
 })

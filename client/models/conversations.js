@@ -14,6 +14,7 @@ module.exports = {
   state: {
     user: {},
     messages: {},
+    lastRead: {'+11628737261': '2015-02-10'}, // { '+12151231234': '2016-08-22T00:01:02Z' }
     isAddingConversation: false
   },
   reducers: {
@@ -22,17 +23,18 @@ module.exports = {
       const newMessages = extend(state.messages, keyedMessages)
       return { messages: newMessages }
     },
-    // receive: (messages, state) => {
-    //   const newConversations = createIndexes(messages)
-    //   const oldConversations = cloneDeep(state.conversations) // because merge mutates
-    //   const mergedConversations = merge(oldConversations, newConversations)
-    //   return { conversations: mergedConversations }
-    // },
     setAddingConversation: (isAddingConversation, state) => {
       return { isAddingConversation }
     },
     setUser: (userCtx, state) => {
       return { user: userCtx }
+    },
+    setLastRead: (data, state) => {
+      const { phone, date } = data
+      if (!state.lastRead[phone] || date > state.lastRead[phone]) {
+        const newLastRead = extend(state.lastRead, { [phone]: date })
+        return { lastRead: newLastRead }
+      }
     }
   },
   effects: {
@@ -113,12 +115,3 @@ module.exports = {
     }
   }
 }
-
-// function createIndexes (messages) {
-//   const convosByPhone = groupBy(messages, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
-//   const convosByPhoneByID = {}
-//   for (let phone in convosByPhone) {
-//     convosByPhoneByID[phone] = keyBy(convosByPhone[phone], '_id')
-//   }
-//   return convosByPhoneByID
-// }

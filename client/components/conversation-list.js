@@ -40,14 +40,14 @@ module.exports = ({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd }) =>
 
   function listItem (phone) {
     const classes = ['pure-menu-item']
-    if (activePhone && activePhone === phone) {
+    if (activePhone && activePhone === phone.label) {
       classes.push('pure-menu-selected')
     }
 
     return html`
       <li class=${classes.join(' ')}>
-        <a href="/${phone}" class="pure-menu-link">
-          ${formatPhone(phone)}
+        <a href="/${phone.label}" class="pure-menu-link">
+          ${formatPhone(phone.label)} ${phone.unread > 0 ? html`<small>(${phone.unread})</small>` : ''}
         </a>
       </li>`
   }

@@ -34,6 +34,7 @@
     "pouchdb": "^5.4.5",
     "pouchdb-authentication": "git+https://github.com/skiqh/pouchdb-authentication.git#patch-1",
     "purecss": "^0.6.0",
+    "push.js": "0.0.11",
     "run-parallel": "^1.1.6",
     "run-series": "^1.1.4",
     "server-router": "^2.1.0",

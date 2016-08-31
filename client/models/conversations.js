@@ -4,6 +4,7 @@ PouchDB.plugin(require('pouchdb-authentication'))
 const shortid = require('shortid')
 const series = require('run-series')
 const extend = require('xtend')
+const Push = require('push.js')
 
 if (process.env.NODE_ENV === 'development') window.PouchDB = PouchDB
 
@@ -108,6 +109,22 @@ module.exports = {
         }
         send('receiveLastRead', newLastRead, done)
       }
+    },
+    pushNotification: (data, state, send, done) => {
+      // Only send for new messages
+      if (!(data._id in state.messages)) {
+        console.log('push', state)
+        const path = '/' + data.from
+        Push.create(data.from, {
+          body: data.body,
+          icon: 'https://i.imgur.com/w6dveCM.png',
+          onClick: function () {
+            window.focus()
+            send('redirect', path, done)
+            this.close()
+          }
+        })
+      }
     }
   },
   subscriptions: {
@@ -119,7 +136,12 @@ module.exports = {
       }).on('change', (change) => {
         if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
         console.log('change', change)
-        send('receive', [change.doc], done)
+        const operations = []
+        if (change.doc.direction === 'inbound') {
+          operations.push((cb) => send('pushNotification', change.doc, cb))
+        }
+        operations.push((cb) => send('receive', [change.doc], cb))
+        series(operations, done)
       })
     },
     getCachedLastRead: (send, done) => {

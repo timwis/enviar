@@ -53,10 +53,11 @@ module.exports = (state, prev, send) => {
   const activePhone = state.params && state.params.phone
   const messagesArray = values(state.messages)
   const conversations = groupBy(messagesArray, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
-  const phones = Object.keys(conversations)
+  const phones = calculateUnreadCounts(conversations, state.lastRead)
   if (activePhone && conversations[activePhone]) {
     const activeConversation = sortBy(conversations[activePhone], 'date')
     messages = Messages(activePhone, activeConversation)
+    setLastRead(activePhone, activeConversation, state.lastRead)
   }
 
   return html`
@@ -100,5 +101,28 @@ module.exports = (state, prev, send) => {
 
   function onLogout () {
     send('logout')
+  }
+
+  // Calculate number of unread messages for each conversation
+  // [ { label: '+12151231234', unread: 2 } ]
+  function calculateUnreadCounts (conversations, lastRead) {
+    const phones = []
+    for (let phone in conversations) {
+      const unread = lastRead[phone]
+        ? conversations[phone].filter((msg) => msg.date > lastRead[phone]).length
+        : conversations[phone].length
+      phones.push({ label: phone, unread })
+    }
+    return phones
+  }
+
+  // Check if active conversation's latest message is newer than
+  // the last "read" message date. If so, mark it as the latest "read"
+  // message date.
+  function setLastRead (phone, messages, lastRead) {
+    const lastMessage = messages.length && messages[messages.length - 1]
+    if (lastMessage && (!lastRead[phone] || lastRead[phone] < lastMessage.date)) {
+      send('setLastRead', { phone, date: lastMessage.date })
+    }
   }
 }

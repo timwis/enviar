@@ -19,11 +19,20 @@ const prefix = css`
   .pure-menu-heading {
     color: #B8DBD9;
   }
-  .new-conversation {
+  .align-right {
     position: absolute;
     right: 15px;
     top: 8px;
+  }
+  .new-conversation {
     color: #B8DBD9;
+  }
+  .unread-count {
+    font-size: 80%;
+    padding: 3px 9px;
+    background-color: #f4f4f9;
+    color: #000;
+    border-radius: 10px;
   }
 `
 
@@ -31,7 +40,7 @@ module.exports = ({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd }) =>
   return html`
   <div class="pure-menu ${prefix}">
     <span class="pure-menu-heading">Conversations</span>
-    <a href="#" onclick=${clickAdd} class="new-conversation"><i class="fa fa-plus-square"></i></a>
+    <a href="#" onclick=${clickAdd} class="new-conversation align-right"><i class="fa fa-plus-square"></i></a>
     <ul id="conversations" class="pure-menu-list">
       ${isAdding ? addForm() : ''}
       ${phones.map(listItem)}
@@ -40,14 +49,15 @@ module.exports = ({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd }) =>
 
   function listItem (phone) {
     const classes = ['pure-menu-item']
-    if (activePhone && activePhone === phone) {
+    if (activePhone && activePhone === phone.label) {
       classes.push('pure-menu-selected')
     }
 
     return html`
       <li class=${classes.join(' ')}>
-        <a href="/${phone}" class="pure-menu-link">
-          ${formatPhone(phone)}
+        <a href="/${phone.label}" class="pure-menu-link">
+          ${formatPhone(phone.label)}
+          ${phone.unread > 0 ? html`<span class="unread-count align-right">${phone.unread}</span>` : ''}
         </a>
       </li>`
   }

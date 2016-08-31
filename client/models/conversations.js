@@ -14,7 +14,7 @@ module.exports = {
   state: {
     user: {},
     messages: {},
-    lastRead: {'+11628737261': '2015-02-10'}, // { '+12151231234': '2016-08-22T00:01:02Z' }
+    lastRead: {}, // { '+12151231234': '2016-08-22T00:01:02Z' }
     isAddingConversation: false
   },
   reducers: {
@@ -29,12 +29,9 @@ module.exports = {
     setUser: (userCtx, state) => {
       return { user: userCtx }
     },
-    setLastRead: (data, state) => {
-      const { phone, date } = data
-      if (!state.lastRead[phone] || date > state.lastRead[phone]) {
-        const newLastRead = extend(state.lastRead, { [phone]: date })
-        return { lastRead: newLastRead }
-      }
+    receiveLastRead: (newLastRead, state) => {
+      // Actual updates are performed in the effect and passed to this reducer
+      return { lastRead: newLastRead }
     }
   },
   effects: {
@@ -99,6 +96,18 @@ module.exports = {
     redirect: (path, state, send, done) => {
       window.history.pushState({}, null, path)
       send('location:setLocation', { location: path }, done)
+    },
+    setLastRead: (data, state, send, done) => {
+      const { phone, date } = data
+      if (!state.lastRead[phone] || date > state.lastRead[phone]) {
+        const newLastRead = extend(state.lastRead, { [phone]: date })
+        try {
+          window.localStorage.setItem('lastRead', JSON.stringify(newLastRead))
+        } catch (e) {
+          return done(new Error('Error saving last read timestamp to local storage'))
+        }
+        send('receiveLastRead', newLastRead, done)
+      }
     }
   },
   subscriptions: {
@@ -112,6 +121,17 @@ module.exports = {
         console.log('change', change)
         send('receive', [change.doc], done)
       })
+    },
+    getCachedLastRead: (send, done) => {
+      try {
+        const lastReadString = window.localStorage.getItem('lastRead')
+        if (lastReadString) {
+          const lastReadObject = JSON.parse(lastReadString)
+          send('receiveLastRead', lastReadObject, done)
+        }
+      } catch (e) {
+        // noop
+      }
     }
   }
 }

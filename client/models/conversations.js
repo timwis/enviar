@@ -125,6 +125,7 @@ module.exports = {
           }
         })
       }
+      done()
     }
   },
   subscriptions: {
@@ -137,7 +138,7 @@ module.exports = {
         if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
         console.log('change', change)
         const operations = []
-        if (change.doc.direction === 'inbound') {
+        if (change.doc.direction === 'inbound' && !document.hasFocus()) {
           operations.push((cb) => send('pushNotification', change.doc, cb))
         }
         operations.push((cb) => send('receive', [change.doc], cb))

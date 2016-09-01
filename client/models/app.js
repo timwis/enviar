@@ -28,19 +28,16 @@ module.exports = (db) => ({
       send('location:setLocation', { location: path }, done)
     },
     pushNotification: (data, state, send, done) => {
-      // Only send for new messages
-      if (!(data._id in state.convos.messages)) {
-        const path = '/' + data.from
-        Push.create(data.from, {
-          body: data.body,
-          icon: 'https://i.imgur.com/w6dveCM.png',
-          onClick: function () {
-            window.focus()
-            send('redirect', path, done)
-            this.close()
-          }
-        })
-      }
+      const path = '/' + data.from
+      Push.create(data.from, {
+        body: data.body,
+        icon: 'https://i.imgur.com/w6dveCM.png',
+        onClick: function () {
+          window.focus()
+          send('redirect', path, done)
+          this.close()
+        }
+      })
       done()
     }
   }

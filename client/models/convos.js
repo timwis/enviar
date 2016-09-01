@@ -44,6 +44,17 @@ module.exports = (db) => ({
         done() // if outbound is successful, new message is emitted & received via subscription
       })
     },
+    receiveInbound: (message, state, send, done) => {
+      const operations = []
+      const isNew = !(message._id in state.messages)
+
+      if (!document.hasFocus() && message.direction === 'inbound' && isNew) {
+        operations.push((cb) => send('pushNotification', message, cb))
+      }
+
+      operations.push((cb) => send('convos:upsert', [message], cb))
+      series(operations, done)
+    },
     addConversation: (phone, state, send, done) => {
       series([
         (cb) => send('convos:setAdding', false, cb),
@@ -65,7 +76,7 @@ module.exports = (db) => ({
     }
   },
   subscriptions: {
-    receiveInbound: (send, done) => {
+    watchInbound: (send, done) => {
       db.changes({
         since: 'now',
         live: true,
@@ -73,12 +84,7 @@ module.exports = (db) => ({
       }).on('change', (change) => {
         if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
         console.log('change', change)
-        const operations = []
-        if (change.doc.direction === 'inbound' && !document.hasFocus()) {
-          operations.push((cb) => send('pushNotification', change.doc, cb))
-        }
-        operations.push((cb) => send('convos:upsert', [change.doc], cb))
-        series(operations, done)
+        send('convos:receiveInbound', change.doc, done)
       })
     },
     getCachedLastRead: (send, done) => {

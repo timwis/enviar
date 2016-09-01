@@ -32,7 +32,7 @@
     "lodash": "^4.14.1",
     "nano": "^6.2.0",
     "pouchdb": "^5.4.5",
-    "pouchdb-authentication": "git+https://github.com/skiqh/pouchdb-authentication.git#patch-1",
+    "pouchdb-authentication": "^0.5.4",
     "purecss": "^0.6.0",
     "run-parallel": "^1.1.6",
     "run-series": "^1.1.4",

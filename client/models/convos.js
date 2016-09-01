@@ -3,6 +3,8 @@ const shortid = require('shortid')
 const series = require('run-series')
 const extend = require('xtend')
 
+const myLocalStorage = require('../util').localStorageWrapper
+
 module.exports = (db) => ({
   namespace: 'convos',
   state: {
@@ -55,12 +57,10 @@ module.exports = (db) => ({
       const { phone, date } = data
       if (!state.lastRead[phone] || date > state.lastRead[phone]) {
         const newLastRead = extend(state.lastRead, { [phone]: date })
-        try {
-          window.localStorage.setItem('lastRead', JSON.stringify(newLastRead))
-        } catch (e) {
-          return done(new Error('Error saving last read timestamp to local storage'))
-        }
-        send('convos:setLastRead', newLastRead, done)
+        myLocalStorage('lastRead', newLastRead, (err) => {
+          if (err) return done(new Error('Error saving last read timestamp to local storage'))
+          send('convos:setLastRead', newLastRead, done)
+        })
       }
     }
   },
@@ -82,15 +82,10 @@ module.exports = (db) => ({
       })
     },
     getCachedLastRead: (send, done) => {
-      try {
-        const lastReadString = window.localStorage.getItem('lastRead')
-        if (lastReadString) {
-          const lastReadObject = JSON.parse(lastReadString)
-          send('convos:setLastRead', lastReadObject, done)
-        }
-      } catch (e) {
-        // noop
-      }
+      myLocalStorage('lastRead', (err, result) => {
+        if (err) return done(new Error('Error retrieving last read timestamps from local storage'))
+        send('convos:setLastRead', result, done)
+      })
     }
   }
 })

@@ -2,7 +2,7 @@ const test = require('ava')
 const sortBy = require('lodash/sortby')
 require('jsdom-global')()
 
-const model = require('../client/models/conversations')
+const model = require('../client/models/convos')
 const chat = require('../client/pages/chat')
 const messagesFixture = require('./fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
@@ -59,7 +59,7 @@ test('pages : chat : new message merged into existing list', (t) => {
   t.is(numMessagesAfter, numMessagesBefore + 1, 'one more message')
 })
 
-test('reducers : receive : sort messages list', (t) => {
+test('pages : chat : sort messages list', (t) => {
   const state = model.reducers.receive(messagesFixture, {})
   state.params = { phone: samplePhone }
   const send = () => {}

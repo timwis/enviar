@@ -1,20 +1,28 @@
 const test = require('ava')
+const extend = require('xtend')
 const sortBy = require('lodash/sortby')
 require('jsdom-global')()
 
-const model = require('../client/models/conversations')
+const model = require('../client/models/convos')()
 const chat = require('../client/pages/chat')
 const messagesFixture = require('./fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
-test('reducers : receive : group by message id', (t) => {
-  const state = model.reducers.receive(messagesFixture, {})
-  const keys = Object.keys(state.messages)
+function generateState (messages, prev = {}) {
+  return {
+    convos: extend(model.state, model.reducers.upsert(messages, prev)),
+    user: {}
+  }
+}
+
+test('reducers : upsert : group by message id', (t) => {
+  const state = generateState(messagesFixture)
+  const keys = Object.keys(state.convos.messages)
   t.is(keys.length, 50, 'messages has correct number of keys')
 })
 
 test('pages : chat : group messages by conversation', (t) => {
-  const state = model.reducers.receive(messagesFixture, {})
+  const state = generateState(messagesFixture)
   const send = () => {}
   const view = chat(state, {}, send)
 
@@ -23,7 +31,7 @@ test('pages : chat : group messages by conversation', (t) => {
 })
 
 test('pages : chat : show active conversation messages', (t) => {
-  const state = model.reducers.receive(messagesFixture, {})
+  const state = generateState(messagesFixture)
   state.params = { phone: samplePhone }
   const send = () => {}
   const view = chat(state, {}, send)
@@ -33,7 +41,7 @@ test('pages : chat : show active conversation messages', (t) => {
 })
 
 test('pages : chat : new message merged into existing list', (t) => {
-  const stateBefore = model.reducers.receive(messagesFixture, {})
+  const stateBefore = generateState(messagesFixture)
   stateBefore.params = { phone: samplePhone }
   const send = () => {}
   const viewBefore = chat(stateBefore, {}, send)
@@ -49,7 +57,7 @@ test('pages : chat : new message merged into existing list', (t) => {
     direction: 'inbound'
   }
 
-  const stateAfter = model.reducers.receive([newMsg], stateBefore)
+  const stateAfter = generateState([newMsg], stateBefore.convos)
   stateAfter.params = { phone: samplePhone }
   const viewAfter = chat(stateAfter, {}, send)
   const numConvosAfter = viewAfter.querySelector('#conversations').children.length
@@ -59,8 +67,8 @@ test('pages : chat : new message merged into existing list', (t) => {
   t.is(numMessagesAfter, numMessagesBefore + 1, 'one more message')
 })
 
-test('reducers : receive : sort messages list', (t) => {
-  const state = model.reducers.receive(messagesFixture, {})
+test('pages : chat : sort messages list', (t) => {
+  const state = generateState(messagesFixture)
   state.params = { phone: samplePhone }
   const send = () => {}
   const view = chat(state, {}, send)

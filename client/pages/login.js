@@ -32,7 +32,7 @@ module.exports = (state, prev, send) => {
 
   function onSubmit (e) {
     const formData = getFormData(e.target)
-    send('login', formData)
+    send('user:login', formData)
     e.preventDefault()
   }
 }

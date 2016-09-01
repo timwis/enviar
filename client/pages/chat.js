@@ -49,15 +49,15 @@ const prefix = css`
 
 module.exports = (state, prev, send) => {
   let messages
-  const isAdding = state.isAddingConversation
+  const isAdding = state.convos.isAdding
   const activePhone = state.params && state.params.phone
-  const messagesArray = values(state.messages)
+  const messagesArray = values(state.convos.messages)
   const conversations = groupBy(messagesArray, (msg) => msg.direction === 'inbound' ? msg.from : msg.to)
-  const phones = calculateUnreadCounts(conversations, state.lastRead)
+  const phones = calculateUnreadCounts(conversations, state.convos.lastRead)
   if (activePhone && conversations[activePhone]) {
     const activeConversation = sortBy(conversations[activePhone], 'date')
     messages = Messages(activePhone, activeConversation)
-    setLastRead(activePhone, activeConversation, state.lastRead)
+    setLastRead(activePhone, activeConversation, state.convos.lastRead)
   }
 
   return html`
@@ -81,7 +81,7 @@ module.exports = (state, prev, send) => {
 
   function onCompose (data) {
     data.to = activePhone
-    send('outbound', data)
+    send('convos:sendOutbound', data)
   }
 
   function onClickAdd () {
@@ -91,7 +91,7 @@ module.exports = (state, prev, send) => {
   function onSubmitAdd (phone) {
     const validatedPhone = validatePhone(phone)
     if (validatedPhone) {
-      send('addAndRedirect', validatedPhone)
+      send('convos:addConversation', validatedPhone)
       return true
     } else {
       console.log('Invalid phone number')
@@ -100,7 +100,7 @@ module.exports = (state, prev, send) => {
   }
 
   function onLogout () {
-    send('logout')
+    send('user:logout')
   }
 
   // Calculate number of unread messages for each conversation
@@ -122,7 +122,7 @@ module.exports = (state, prev, send) => {
   function setLastRead (phone, messages, lastRead) {
     const lastMessage = messages.length && messages[messages.length - 1]
     if (lastMessage && (!lastRead[phone] || lastRead[phone] < lastMessage.date)) {
-      send('setLastRead', { phone, date: lastMessage.date })
+      send('convos:saveLastRead', { phone, date: lastMessage.date })
     }
   }
 }

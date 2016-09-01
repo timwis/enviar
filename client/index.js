@@ -1,5 +1,7 @@
 const choo = require('choo')
 const css = require('sheetify')
+const PouchDB = require('pouchdb')
+PouchDB.plugin(require('pouchdb-authentication'))
 
 const chat = require('./pages/chat')
 const login = require('./pages/login')
@@ -26,9 +28,16 @@ const app = choo()
 if (process.env.NODE_ENV === 'development') {
   const log = require('choo-log')
   app.use(log())
+
+  window.PouchDB = PouchDB
 }
 
-app.model(require('./models/conversations'))
+const dbURL = process.env.COUCHDB_URL + '/messages'
+const db = new PouchDB(dbURL, { skipSetup: true })
+
+app.model(require('./models/app')(db))
+app.model(require('./models/user')(db))
+app.model(require('./models/convos')(db))
 
 app.router((route) => [
   route('/', chat),

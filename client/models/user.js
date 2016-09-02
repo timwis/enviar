@@ -6,7 +6,7 @@ module.exports = (db) => ({
   },
   reducers: {
     set: (userCtx, state) => {
-      return { user: userCtx }
+      return userCtx
     }
   },
   effects: {

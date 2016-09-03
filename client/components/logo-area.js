@@ -19,13 +19,16 @@ const prefix = css`
   }`
 
 module.exports = (title, user = {}, onLogout) => {
-  const logoutSuffix = user.name && `as ${user.name}`
+  const loginLogoutLink = user.name
+    ? html`<a href="#" class="pure-menu-link" onclick=${onClickLogout}>Logout as ${user.name}</a>`
+    : html`<a href="/login" class="pure-menu-link">Login</a>`
+
   return html`
     <div class="pure-menu ${prefix}">
       <span class="pure-menu-heading">${title}</span>
       <ul class="pure-menu-list">
         <li class="pure-menu-item">
-          <a href="#" class="pure-menu-link" onclick=${onClickLogout}>Logout ${logoutSuffix}</a>
+          ${loginLogoutLink}
         </li>
       </ul>
     </div>`

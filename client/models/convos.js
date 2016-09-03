@@ -24,6 +24,9 @@ module.exports = (db) => ({
     setLastRead: (newLastRead, state) => {
       // Actual updates are performed in the effect and passed to this reducer
       return { lastRead: newLastRead }
+    },
+    reset: (data, state) => {
+      return module.exports().state
     }
   },
   effects: {

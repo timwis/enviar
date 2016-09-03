@@ -1,3 +1,5 @@
+const series = require('run-series')
+
 module.exports = (db) => ({
   namespace: 'user',
   state: {
@@ -7,6 +9,9 @@ module.exports = (db) => ({
   reducers: {
     set: (userCtx, state) => {
       return userCtx
+    },
+    reset: (data, state) => {
+      return module.exports().state
     }
   },
   effects: {
@@ -20,7 +25,11 @@ module.exports = (db) => ({
     logout: (data, state, send, done) => {
       db.logout((err) => {
         if (err) return done(new Error('Error logging out'))
-        send('redirect', '/login', done)
+        series([
+          (cb) => send('user:reset', cb),
+          (cb) => send('convos:reset', cb),
+          (cb) => send('redirect', '/login', cb)
+        ], done)
       })
     }
   }

@@ -3,8 +3,8 @@ const css = require('sheetify')
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-authentication'))
 
-const chat = require('./pages/chat')
-const login = require('./pages/login')
+const layout = require('./views/layout')
+const login = require('./views/login')
 
 css('purecss/build/base')
 css('purecss/build/forms')
@@ -40,8 +40,8 @@ app.model(require('./models/user')(db))
 app.model(require('./models/convos')(db))
 
 app.router((route) => [
-  route('/', chat),
-  route('/:phone', chat),
+  route('/', layout),
+  route('/:phone', layout),
   route('/login', login)
 ])
 

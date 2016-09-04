@@ -6,6 +6,7 @@ PouchDB.plugin(require('pouchdb-authentication'))
 const Layout = require('./views/layout')
 const Login = require('./views/login')
 const Chat = require('./views/chat')
+const Account = require('./views/account')
 
 css('purecss/build/base')
 css('purecss/build/forms')
@@ -41,7 +42,8 @@ app.model(require('./models/convos')(db))
 app.router((route) => [
   route('/', Layout()),
   route('/:phone', Layout(Chat)),
-  route('/login', Layout(Login))
+  route('/login', Layout(Login)),
+  route('/account', Layout(Account))
 ])
 
 const tree = app.start()

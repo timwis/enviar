@@ -30,6 +30,9 @@ module.exports = (title, user = {}, onLogout) => {
         <li class="pure-menu-item">
           ${loginLogoutLink}
         </li>
+        <li class="pure-menu-item">
+          <a href="/account" class="pure-menu-link">Account</a>
+        </li>
       </ul>
     </div>`
 

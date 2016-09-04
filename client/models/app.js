@@ -12,8 +12,7 @@ module.exports = (db) => ({
           return done(new Error('Error getting current session'))
         } else if (!body.userCtx.name) {
           // Not logged in
-          const path = '/login'
-          send('redirect', path, done)
+          send('redirect', '/login', done)
         } else {
           // Logged in
           series([

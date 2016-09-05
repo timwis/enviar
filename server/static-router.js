@@ -6,7 +6,7 @@ const path = require('path')
 module.exports = staticRouter
 
 // Serve client application
-function staticRouter ({ title, dev }) {
+function staticRouter (title, dev) {
   const router = serverRouter()
   const assets = bankai()
 

@@ -39,7 +39,7 @@ fetchMessages(db, twilio)
 followOutbound(db, twilio, TWILIO_PHONE)
 
 // Setup HTTP server
-const router = staticRouter({ title: APP_TITLE, dev: DEV })
+const router = staticRouter(APP_TITLE, DEV)
 inboundRoute(router, db)
 http.createServer(router).listen(PORT, () => console.log('Listening on port', PORT))
 

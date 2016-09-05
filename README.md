@@ -4,6 +4,8 @@ Chat interface for SMS / text messages. **Work in progress**.
 
 ![screenshot](http://i.imgur.com/XMrf0Rd.png)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Installation
 1. Clone this repo using `git clone https://github.com/timwis/enviar.git`
 2. Install node dependencies via `npm install`

@@ -39,3 +39,21 @@ curl -X POST -d 'SmsSid=123456&From=%2B12597150948&Body=hello' http://localhost:
 3. Point twilio's incoming message webhook to `http://<your-server>/api/inbound` (check out [ngrok](https://ngrok.com/) to expose your localhost)
 
 Access the server at `http://localhost:3000`
+
+## User administration
+By default, couchdb considers everyone an admin. If you have disabled this setting (recommended for production)
+and have created an admin user, you can use that user to login to enviar. You can also create users that have
+`agent`-level access, allowing them to user enviar without admin access. To create `agent` users, use the
+command line interface.
+
+To create a user or change a user's password
+```bash
+npm run user -- <username> <password>
+```
+
+To "upgrade" an existing user to have `agent` access, simply omit the password.
+```bash
+npm run user -- <username>
+```
+
+This functionality will eventually be incorporated into the application.

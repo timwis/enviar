@@ -1,8 +1,9 @@
 # enviar
 
-Chat interface for SMS / text messages. **Work in progress**.
+Real-time, multi-user chat interface for SMS / text messages. Imagine a call center where customers can
+send a text message to a single number and have a live chat with any agent(s) available.
 
-![screenshot](http://i.imgur.com/XMrf0Rd.png)
+![screenshot](http://i.imgur.com/PIRyygi.png)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 

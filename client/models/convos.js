@@ -23,7 +23,7 @@ module.exports = (db) => ({
     },
     setLastRead: (newLastRead, state) => {
       // Actual updates are performed in the effect and passed to this reducer
-      return { lastRead: newLastRead }
+      return { lastRead: newLastRead || {} }
     },
     reset: (data, state) => {
       return module.exports().state
@@ -33,13 +33,11 @@ module.exports = (db) => ({
     fetch: (data, state, send, done) => {
       db.allDocs({ include_docs: true, startkey: 'msg-' }, (err, result) => {
         if (err) return console.error('Error fetching docs', err)
-        console.log(result)
         const messages = result.rows.map((row) => row.doc)
         send('convos:upsert', messages, done)
       })
     },
     sendOutbound: (data, state, send, done) => {
-      console.log('sending message: ' + data.body)
       data._id = `msg-${Date.now()}-${shortid.generate()}`
       data.direction = 'outbound'
       db.put(data, (err, response) => {
@@ -86,7 +84,6 @@ module.exports = (db) => ({
         include_docs: true
       }).on('change', (change) => {
         if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
-        console.log('change', change)
         send('convos:receiveInbound', change.doc, done)
       })
     },

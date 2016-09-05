@@ -1,6 +1,8 @@
 const series = require('run-series')
 const Push = require('push.js')
 
+const VALID_ROLES = ['agent', '_admin']
+
 module.exports = (db) => ({
   state: {},
   reducers: {},
@@ -10,7 +12,7 @@ module.exports = (db) => ({
         if (err) {
           // Error with request
           return done(new Error('Error getting current session'))
-        } else if (!body.userCtx.name) {
+        } else if (!hasAgentAccess(body.userCtx)) {
           // Not logged in
           send('redirect', '/login', done)
         } else {
@@ -41,3 +43,7 @@ module.exports = (db) => ({
     }
   }
 })
+
+function hasAgentAccess (userCtx) {
+  return userCtx.roles.some((role) => VALID_ROLES.indexOf(role) !== -1)
+}

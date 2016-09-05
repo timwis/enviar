@@ -32,7 +32,7 @@ if (DEV) {
 
 // Setup CouchDB
 assert(COUCHDB_URL, 'COUCHDB_URL environment variable is not defined')
-const authUrl = addAuthToUrl(COUCHDB_URL, COUCHDB_USER, COUCHDB_PASS)
+const authUrl = COUCHDB_USER ? addAuthToUrl(COUCHDB_URL, COUCHDB_USER, COUCHDB_PASS) : COUCHDB_URL
 const db = nano(authUrl).use('messages')
 fetchMessages(db, twilio)
 followOutbound(db, twilio, TWILIO_PHONE)

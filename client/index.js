@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(log())
 }
 
-const dbURL = process.env.COUCHDB_URL + '/messages'
+const dbURL = process.env.COUCHDB_HOST + '/enviar'
 const db = new PouchDB(dbURL, { skipSetup: true })
 
 app.model(require('./models/app')(db))

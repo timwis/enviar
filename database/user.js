@@ -1,5 +1,5 @@
 require('dotenv').config({silent: true})
-const COUCHDB_URL = process.env.COUCHDB_URL
+const COUCHDB_HOST = process.env.COUCHDB_HOST
 const COUCHDB_USER = process.env.COUCHDB_USER
 const COUCHDB_PASS = process.env.COUCHDB_PASS
 
@@ -8,8 +8,8 @@ const url = require('url')
 const nano = require('nano')
 const meow = require('meow')
 
-assert(COUCHDB_URL, 'COUCHDB_URL environment variable is not set')
-const authUrl = COUCHDB_USER ? addAuthToUrl(COUCHDB_URL, COUCHDB_USER, COUCHDB_PASS) : COUCHDB_URL
+assert(COUCHDB_HOST, 'COUCHDB_HOST environment variable is not set')
+const authUrl = COUCHDB_USER ? addAuthToUrl(COUCHDB_HOST, COUCHDB_USER, COUCHDB_PASS) : COUCHDB_HOST
 const db = nano(authUrl).use('_users')
 
 const cli = meow(`

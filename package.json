@@ -7,6 +7,7 @@
     "start": "node server/index.js",
     "test": "ava test --verbose",
     "bootstrap": "node database/bootstrap.js",
+    "cors": "add-cors-to-couchdb",
     "user": "node database/user.js"
   },
   "author": "timwis <tim@timwis.com>",
@@ -19,6 +20,7 @@
     "chat"
   ],
   "dependencies": {
+    "add-cors-to-couchdb": "0.0.6",
     "bankai": "^3.3.0",
     "body": "^5.1.0",
     "browserify": "^13.1.0",

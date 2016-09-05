@@ -13,11 +13,11 @@ Chat interface for SMS / text messages. **Work in progress**.
 This application uses CouchDB to store messages. Follow their [install docs](http://docs.couchdb.org/en/1.6.1/install/index.html)
 to run CouchDB locally or setup a free hosted instance with [CloudAnt](https://cloudant.com/).
 
-4. Fill in your the `COUCHDB_URL` in `.env` (ie. `http://localhost:5984`)
+4. Fill in your the `COUCHDB_HOST` in `.env` (ie. `http://localhost:5984`)
 5. By default, couchdb considers everyone an admin. If you have disabled this setting (recommended for production)
 and have an admin user setup, fill in its credentials in the `COUCHDB_USER` and `COUCHDB_PASS` variables. Otherwise
 continue without these.
-6. Configure the database using `npm run bootstrap`
+6. Configure the database using `npm run bootstrap`. If you're running couchdb locally, also run `npm run cors`.
 
 ## Usage
 

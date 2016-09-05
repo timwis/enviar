@@ -1,6 +1,6 @@
 const html = require('choo/html')
 const values = require('lodash/values')
-const groupBy = require('lodash/groupby')
+const groupBy = require('lodash/groupBy')
 
 const ConversationList = require('../components/conversation-list')
 const LogoArea = require('../components/logo-area')

@@ -2,7 +2,7 @@ const html = require('choo/html')
 const css = require('sheetify')
 const compose = require('lodash/fp/compose')
 const values = require('lodash/fp/values')
-const sortBy = require('lodash/fp/sortby')
+const sortBy = require('lodash/fp/sortBy')
 const filter = require('lodash/fp/filter')
 
 const Messages = require('../components/messages')

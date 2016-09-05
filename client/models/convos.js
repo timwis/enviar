@@ -1,4 +1,4 @@
-const keyBy = require('lodash/keyby')
+const keyBy = require('lodash/keyBy')
 const shortid = require('shortid')
 const series = require('run-series')
 const extend = require('xtend')

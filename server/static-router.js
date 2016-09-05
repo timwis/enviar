@@ -8,15 +8,16 @@ module.exports = staticRouter
 // Serve client application
 function staticRouter ({ title, dev }) {
   const router = serverRouter()
+  const assets = bankai()
 
-  const html = bankai.html({ title })
+  const html = assets.html({ title })
   router.on('/', wrapHandler(html))
 
-  const css = bankai.css()
+  const css = assets.css()
   router.on('/bundle.css', wrapHandler(css))
 
   const jsPath = path.resolve(__dirname, '../client/index.js')
-  const js = bankai.js(browserify, jsPath, { transform: 'envify', debug: dev })
+  const js = assets.js(browserify, jsPath, { transform: 'envify', debug: dev })
   router.on('/bundle.js', wrapHandler(js))
 
   return router

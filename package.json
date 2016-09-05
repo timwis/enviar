@@ -18,7 +18,7 @@
     "chat"
   ],
   "dependencies": {
-    "bankai": "^2.0.7",
+    "bankai": "^3.3.0",
     "body": "^5.1.0",
     "browserify": "^13.1.0",
     "choo": "^3.2.0",

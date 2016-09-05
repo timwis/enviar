@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "ava test --verbose",
-    "bootstrap": "node database/bootstrap.js"
+    "bootstrap": "node database/bootstrap.js",
+    "user": "node database/user.js"
   },
   "author": "timwis <tim@timwis.com>",
   "license": "MIT",
@@ -30,6 +31,7 @@
     "get-form-data": "^1.2.5",
     "insert-css": "^0.2.0",
     "lodash": "^4.14.1",
+    "meow": "^3.7.0",
     "nano": "^6.2.0",
     "pouchdb": "^5.4.5",
     "pouchdb-authentication": "^0.5.4",

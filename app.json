@@ -1,0 +1,26 @@
+{
+  "name": "enviar",
+  "description": "Chat interface for SMS / text messages",
+  "repository": "https://github.com/timwis/enviar",
+  "logo": "https://i.imgur.com/w6dveCM.png",
+  "env": {
+    "COUCHDB_HOST": {
+      "description": "Hostname of CouchDB instance"
+    },
+    "COUCHDB_USER": {
+      "description": "CouchDB username"
+    },
+    "COUCHDB_PASS": {
+      "description": "CouchDB password"
+    },
+    "TWILIO_ACCOUNT_SID": {
+      "description": "Twilio Account SID"
+    },
+    "TWILIO_AUTH_TOKEN": {
+      "description": "Twilio Auth Token"
+    },
+    "TWILIO_PHONE": {
+      "description": "Twilio Phone Number, with leading +"
+    }
+  }
+}

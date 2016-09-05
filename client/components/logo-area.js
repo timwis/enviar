@@ -18,9 +18,9 @@ const prefix = css`
     text-transform: inherit;
   }`
 
-module.exports = (title, user = {}, onLogout) => {
+module.exports = (title, user = {}) => {
   const loginLogoutLink = user.name
-    ? html`<a href="#" class="pure-menu-link" onclick=${onClickLogout}>Logout as ${user.name}</a>`
+    ? html`<a href="/account" class="pure-menu-link">Logged in as ${user.name}</a>`
     : html`<a href="/login" class="pure-menu-link">Login</a>`
 
   return html`
@@ -30,14 +30,6 @@ module.exports = (title, user = {}, onLogout) => {
         <li class="pure-menu-item">
           ${loginLogoutLink}
         </li>
-        <li class="pure-menu-item">
-          <a href="/account" class="pure-menu-link">Account</a>
-        </li>
       </ul>
     </div>`
-
-  function onClickLogout (e) {
-    if (onLogout) onLogout()
-    e.preventDefault()
-  }
 }

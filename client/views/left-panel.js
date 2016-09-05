@@ -16,7 +16,7 @@ module.exports = (state, prev, send) => {
 
   return html`
     <div>
-      ${LogoArea(title, state.user, onLogout)}
+      ${LogoArea(title, state.user)}
       ${ConversationList({ phones, activePhone, isAdding, onClickAdd, onSubmitAdd })}
     </div>`
 
@@ -53,9 +53,5 @@ module.exports = (state, prev, send) => {
       console.log('Invalid phone number')
       return false
     }
-  }
-
-  function onLogout () {
-    send('user:logout')
   }
 }

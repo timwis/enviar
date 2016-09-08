@@ -35,6 +35,8 @@
     "lodash": "^4.14.1",
     "meow": "^3.7.0",
     "nano": "^6.2.0",
+    "node-uuid": "^1.4.7",
+    "postmark": "^1.2.1",
     "pouchdb": "^5.4.5",
     "pouchdb-authentication": "^0.5.4",
     "purecss": "^0.6.0",

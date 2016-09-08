@@ -14,14 +14,19 @@ const POSTMARK_SERVER_TOKEN = process.env.POSTMARK_SERVER_TOKEN
 const http = require('http')
 const assert = require('assert')
 const nano = require('nano')
-const url = require('url')
 const postmark = require('postmark')
+const serverRouter = require('server-router')
+const bankai = require('bankai')
+const browserify = require('browserify')
+const path = require('path')
+const jsonBody = require('body/json')
+const formBody = require('body/form')
 
 const fetchMessages = require('./fetch-messages')
-const staticRouter = require('./static-router')
-const inboundRoute = require('./inbound-route')
+const receiveInbound = require('./receive-inbound')
 const followOutbound = require('./follow-outbound')
-const passwordResetRoutes = require('./password-reset-routes')
+const { initReset, confirmReset } = require('./reset-password')
+const { addAuthToUrl, parseBody, pipeToResponse } = require('./util')
 
 // Setup twilio client (or stub)
 let twilio
@@ -35,6 +40,7 @@ if (DEV) {
 }
 
 // Setup postmark client
+assert(POSTMARK_SERVER_TOKEN, 'POSTMARK_SERVER_TOKEN environment variable is not defined')
 const emailClient = new postmark.Client(POSTMARK_SERVER_TOKEN)
 
 // Setup CouchDB
@@ -46,18 +52,32 @@ fetchMessages(messagesDB, twilio)
 followOutbound(messagesDB, twilio, TWILIO_PHONE)
 
 // Setup HTTP server
-const router = staticRouter(APP_TITLE, DEV)
-inboundRoute(router, messagesDB)
-router.on('/api/reset-password-init', {
-  post: passwordResetRoutes.initReset(usersDB, emailClient)
-})
-router.on('/api/reset-password-confirm', {
-  post: passwordResetRoutes.confirmReset(usersDB)
-})
-http.createServer(router).listen(PORT, () => console.log('Listening on port', PORT))
+const router = serverRouter()
+const assets = bankai()
 
-function addAuthToUrl (plainUrl, user, pass) {
-  const urlObj = url.parse(plainUrl)
-  urlObj.auth = user + ':' + pass
-  return url.format(urlObj)
-}
+const htmlHandler = assets.html({ APP_TITLE })
+router.on('/', pipeToResponse(htmlHandler))
+
+const cssHandler = assets.css()
+router.on('/bundle.css', pipeToResponse(cssHandler))
+
+const jsPath = path.resolve(__dirname, '../client/index.js')
+const jsHandler = assets.js(browserify, jsPath, { transform: 'envify', debug: DEV })
+router.on('/bundle.js', pipeToResponse(jsHandler))
+
+const receiveInboundHandler = receiveInbound(messagesDB)
+router.on('/api/inbound', {
+  post: parseBody(formBody, receiveInboundHandler)
+})
+
+const initResetHandler = initReset(usersDB, emailClient)
+router.on('/api/reset-password-init', {
+  post: parseBody(jsonBody, initResetHandler)
+})
+
+const confirmResetHandler = confirmReset(usersDB)
+router.on('/api/reset-password-confirm', {
+  post: parseBody(jsonBody, confirmResetHandler)
+})
+
+http.createServer(router).listen(PORT, () => console.log('Listening on port', PORT))

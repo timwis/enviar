@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server/index.js",
-    "test": "ava test --verbose",
+    "test": "ava --verbose",
     "bootstrap": "node database/bootstrap.js",
     "cors": "add-cors-to-couchdb",
     "user": "node database/user.js"
@@ -53,6 +53,7 @@
   "devDependencies": {
     "ava": "^0.16.0",
     "jsdom": "^9.4.1",
-    "jsdom-global": "^2.0.0"
+    "jsdom-global": "^2.0.0",
+    "testdouble": "^1.6.1"
   }
 }

@@ -19,6 +19,7 @@ function initReset (db, emailClient) {
       if (err) return respond(res, 404, 'Error finding user document')
 
       if (body.rows.length) {
+        // Found user document
         const token = uuid.v4()
         const newUserDoc = extend(body.rows[0].doc)
         newUserDoc.metadata.resetToken = {
@@ -26,6 +27,7 @@ function initReset (db, emailClient) {
           token
         }
 
+        // Add reset token to user document
         db.insert(newUserDoc, (err, body) => {
           if (err) return respond(res, 500, 'Error adding reset token to user document')
 
@@ -36,6 +38,7 @@ function initReset (db, emailClient) {
             TextBody: 'Reset token: ' + token
           }
 
+          // Email reset token to user
           emailClient.sendEmail(emailConfig, (err, result) => {
             if (err) return respond(res, 500, 'Error sending reset email')
 
@@ -44,14 +47,15 @@ function initReset (db, emailClient) {
           })
         })
       } else {
-        // No user found. Send email letting them know.
+        // No user found
         const emailConfig = {
           From: 'tim@timwis.com',
           To: email,
-          Subject: 'Password reset for enviar',
+          Subject: 'Attempted password reset for enviar',
           TextBody: 'No account found with this email'
         }
 
+        // Email "not found" notice to user
         emailClient.sendEmail(emailConfig, (err, result) => {
           if (err) return respond(res, 500, 'Error sending reset email')
 
@@ -74,12 +78,14 @@ function confirmReset (db) {
       if (!body.rows.length || isExpired(body.rows[0].value)) {
         return respond(res, 404, 'Token not found or token is inactive')
       }
+      console.log((Date.now() - body.rows[0].value) / 1000 / 60)
 
       // User document found with that token
       const newUserDoc = extend(body.rows[0].doc)
       newUserDoc.password = password
       delete newUserDoc.metadata.resetToken
 
+      // Update password and remove reset token from user document
       db.insert(newUserDoc, (err, body) => {
         if (err) respond(res, 500, 'Error saving user document')
 

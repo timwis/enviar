@@ -5,16 +5,15 @@ const css = require('sheetify')
 const prefix = css`
   :host {
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: #F4F4F9;
+    padding: 0 15px;
   }
 `
 
 module.exports = (state, prev, send) => {
   return html`
     <section class=${prefix}>
+      <h2>Login</h2>
       <form class="pure-form pure-form-stacked" onsubmit=${onSubmit}>
         <label>
           Username
@@ -27,6 +26,7 @@ module.exports = (state, prev, send) => {
         </label>
 
         <button type="submit" class="pure-button pure-button-primary">Login</button>
+        <a href="/reset-password">Forgot password</a>
       </form>
     </section>`
 

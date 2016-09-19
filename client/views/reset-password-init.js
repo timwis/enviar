@@ -12,7 +12,7 @@ const prefix = css`
 module.exports = (state, prev, send) => {
   return html`
     <section class=${prefix}>
-      <h1>Forgot password</h1>
+      <h2>Reset password</h2>
       <form class="pure-form pure-form-stacked" onsubmit=${onSubmit}>
         <label>
           Email

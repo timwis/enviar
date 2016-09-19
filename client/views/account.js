@@ -6,7 +6,7 @@ const prefix = css`
   :host {
     height: 100%;
     background-color: #F4F4F9;
-    padding: 15px;
+    padding: 0 15px;
   }
   #logout {
     width: 200px;
@@ -16,7 +16,6 @@ const prefix = css`
 module.exports = (state, prev, send) => {
   return html`
     <section class=${prefix}>
-
       <h2>Logout</h2>
       <button onclick=${onClickLogout} class="pure-button pure-button-primary" id="logout">
         <i class="fa fa-sign-out"></i>

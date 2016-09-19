@@ -40,6 +40,17 @@ module.exports = (db, initialState) => ({
         send('user:login', loginData, done)
       })
     },
+    changeEmail: (data, state, send, done) => {
+      const userData = {
+        metadata: {
+          email: data.email
+        }
+      }
+      db.putUser(state.name, userData, (err, body) => {
+        if (err) return done(new Error('Error changing email'))
+        send('ui:set', {changeEmailSubmitted: true}, done)
+      })
+    },
     resetPasswordInit: (data, state, send, done) => {
       http.post({
         uri: '/api/reset-password-init',

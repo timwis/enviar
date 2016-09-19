@@ -23,7 +23,7 @@ module.exports = (state, prev, send) => {
       </button>
 
       <h2>Change password</h2>
-      <form class="pure-form pure-form-stacked" onsubmit=${onSubmit}>
+      <form class="pure-form pure-form-stacked" onsubmit=${onChangePassword}>
         <label>
           New Password
           <input type="password" name="password">
@@ -36,14 +36,38 @@ module.exports = (state, prev, send) => {
 
         <button type="submit" class="pure-button pure-button-primary">Change Password</button>
       </form>
+
+      <h2>Change email</h2>
+      <form class="pure-form pure-form-stacked" onsubmit=${onChangeEmail}>
+        <label>
+          New Email
+          <input type="email" name="email">
+        </label>
+
+        <button type="submit" class="pure-button pure-button-primary">Change Email</button>
+
+        ${state.ui.changeEmailSubmitted
+          ? html`<div class="alert">Your email has been changed.</div>`
+          : ''}
+      </form>
     </section>`
 
-  function onSubmit (e) {
+  function onChangePassword (e) {
     const formData = getFormData(e.target)
     if (formData.password === formData.confirm) {
       send('user:changePassword', formData)
     } else {
       console.error('Passwords do not match')
+    }
+    e.preventDefault()
+  }
+
+  function onChangeEmail (e) {
+    const input = e.target.querySelector('[name=email]')
+    const email = input.value
+    if (email) {
+      send('user:changeEmail', {email})
+      input.value = ''
     }
     e.preventDefault()
   }

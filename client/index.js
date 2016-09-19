@@ -4,6 +4,7 @@ const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-authentication'))
 
 const Layout = require('./views/layout')
+const RequireAuth = require('./views/require-auth')
 const Login = require('./views/login')
 const Chat = require('./views/chat')
 const Account = require('./views/account')
@@ -35,16 +36,19 @@ if (process.env.NODE_ENV === 'development') {
 const dbURL = process.env.COUCHDB_HOST + '/enviar'
 const db = new PouchDB(dbURL, { skipSetup: true })
 
-app.model(require('./models/app')(db))
-app.model(require('./models/user')(db))
-app.model(require('./models/convos')(db))
+db.getSession((err, body) => {
+  const initialUserState = err ? {} : body.userCtx
+  app.model(require('./models/user')(db, initialUserState))
+  app.model(require('./models/app')(db))
+  app.model(require('./models/convos')(db))
 
-app.router((route) => [
-  route('/', Layout()),
-  route('/:phone', Layout(Chat)),
-  route('/login', Layout(Login)),
-  route('/account', Layout(Account))
-])
+  app.router((route) => [
+    route('/', RequireAuth(Layout())),
+    route('/:phone', RequireAuth(Layout(Chat))),
+    route('/login', Layout(Login)),
+    route('/account', RequireAuth(Layout(Account)))
+  ])
 
-const tree = app.start()
-document.body.appendChild(tree)
+  const tree = app.start()
+  document.body.appendChild(tree)
+})

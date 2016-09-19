@@ -1,8 +1,8 @@
 const series = require('run-series')
 
-module.exports = (db) => ({
+module.exports = (db, initialState) => ({
   namespace: 'user',
-  state: {
+  state: initialState || {
     name: '',
     roles: []
   },

@@ -1,4 +1,5 @@
 const series = require('run-series')
+const http = require('choo/http')
 
 module.exports = (db, initialState) => ({
   namespace: 'user',
@@ -37,6 +38,22 @@ module.exports = (db, initialState) => ({
         if (err) return done(new Error('Error changing password'))
         const loginData = { username: state.name, password: data.password }
         send('user:login', loginData, done)
+      })
+    },
+    resetPasswordInit: (data, state, send, done) => {
+      http.post({
+        uri: '/api/reset-password-init',
+        json: data
+      }, (err, response, body) => {
+        done(err)
+      })
+    },
+    resetPasswordConfirm: (data, state, send, done) => {
+      http.post({
+        uri: '/api/reset-password-confirm',
+        json: data
+      }, (err, response, body) => {
+        done(err)
       })
     }
   }

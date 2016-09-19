@@ -55,7 +55,7 @@ followOutbound(messagesDB, twilio, TWILIO_PHONE)
 const router = serverRouter()
 const assets = bankai()
 
-const htmlHandler = assets.html({ APP_TITLE })
+const htmlHandler = assets.html({ APP_TITLE, entry: '/bundle.js', css: '/bundle.css' })
 router.on('/', pipeToResponse(htmlHandler))
 
 const cssHandler = assets.css()

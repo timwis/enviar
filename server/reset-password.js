@@ -109,7 +109,7 @@ function resetEmailTemplate (token) {
 
     Follow this link to reset your enviar password for your tim@timwis.com account.
 
-    ${path.join(BASE_URL, '/password-reset/', token)}
+    ${path.join(BASE_URL, '/reset-password/', token)}
 
     If you didn’t ask to reset your password, you can ignore this email.
 

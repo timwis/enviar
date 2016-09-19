@@ -45,7 +45,8 @@ module.exports = (db, initialState) => ({
         uri: '/api/reset-password-init',
         json: data
       }, (err, response, body) => {
-        done(err)
+        if (err) return done(err)
+        send('ui:set', {resetPasswordInitSubmitted: true}, done)
       })
     },
     resetPasswordConfirm: (data, state, send, done) => {
@@ -53,7 +54,8 @@ module.exports = (db, initialState) => ({
         uri: '/api/reset-password-confirm',
         json: data
       }, (err, response, body) => {
-        done(err)
+        if (err) return done(err)
+        send('ui:set', {resetPasswordConfirmSubmitted: true}, done)
       })
     }
   }

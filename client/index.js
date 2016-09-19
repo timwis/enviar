@@ -8,8 +8,8 @@ const RequireAuth = require('./views/require-auth')
 const Login = require('./views/login')
 const Chat = require('./views/chat')
 const Account = require('./views/account')
-const PasswordResetInit = require('./views/password-reset-init')
-const PasswordResetConfirm = require('./views/password-reset-confirm')
+const ResetPasswordInit = require('./views/reset-password-init')
+const ResetPasswordConfirm = require('./views/reset-password-confirm')
 
 css('purecss/build/base')
 css('purecss/build/forms')
@@ -45,14 +45,15 @@ db.getSession((err, body) => {
   app.model(require('./models/user')(db, initialUserState))
   app.model(require('./models/app')(db))
   app.model(require('./models/convos')(db))
+  app.model(require('./models/ui'))
 
   app.router((route) => [
     route('/', RequireAuth(Layout())),
     route('/:phone', RequireAuth(Layout(Chat))),
     route('/login', Layout(Login)),
     route('/account', RequireAuth(Layout(Account))),
-    route('/password-reset', Layout(PasswordResetInit), [
-      route('/:token', Layout(PasswordResetConfirm))
+    route('/reset-password', Layout(ResetPasswordInit), [
+      route('/:token', Layout(ResetPasswordConfirm))
     ])
   ])
 

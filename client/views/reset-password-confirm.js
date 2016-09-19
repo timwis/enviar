@@ -26,6 +26,10 @@ module.exports = (state, prev, send) => {
         </label>
 
         <button type="submit" class="pure-button pure-button-primary">Reset password</button>
+
+        ${state.ui.resetPasswordConfirmSubmitted
+          ? html`<div class="alert">Your password has been reset. Please <a href="/login">Login</a>.</div>`
+          : ''}
       </form>
     </section>`
 

@@ -21,6 +21,15 @@
     },
     "TWILIO_PHONE": {
       "description": "Twilio Phone Number, with leading +"
+    },
+    "POSTMARK_SERVER_TOKEN": {
+      "description": "Server token from postmark.com for sending emails"
+    },
+    "FROM_EMAIL": {
+      "description": "Email address to send password reset emails from"
+    },
+    "BASE_URL": {
+      "description": "Website URL, ie. http://mysite.com"
     }
   }
 }

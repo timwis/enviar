@@ -56,7 +56,7 @@ module.exports = (db, initialState) => ({
         uri: '/api/reset-password-init',
         json: data
       }, (err, response, body) => {
-        if (err) return done(err)
+        if (err || response.statusCode !== 200) return done(new Error('Error initializing password reset'))
         send('ui:set', {resetPasswordInitSubmitted: true}, done)
       })
     },
@@ -65,7 +65,7 @@ module.exports = (db, initialState) => ({
         uri: '/api/reset-password-confirm',
         json: data
       }, (err, response, body) => {
-        if (err) return done(err)
+        if (err || response.statusCode !== 200) return done(new Error('Error confirming password reset'))
         send('ui:set', {resetPasswordConfirmSubmitted: true}, done)
       })
     }

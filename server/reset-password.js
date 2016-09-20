@@ -107,7 +107,7 @@ function resetEmailTemplate (token) {
   return `
     Hello,
 
-    Follow this link to reset your enviar password for your tim@timwis.com account.
+    Follow this link to reset your enviar password for your enviar account.
 
     ${path.join(BASE_URL, '/reset-password/', token)}
 

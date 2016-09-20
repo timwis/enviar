@@ -14,19 +14,20 @@ const db = nano(authUrl).use('_users')
 
 const cli = meow(`
   Usage
-    $ npm run user -- <username> <password?>
+    $ npm run user -- <email> <password?>
 `)
 
-const [ username, password ] = cli.input
-assert(username, 'No username provided')
+const [ email, password ] = cli.input
+assert(email, 'No email provided')
 
-const userId = 'org.couchdb.user:' + username
+const userId = 'org.couchdb.user:' + email
 db.get(userId, (err, body) => {
   if (err) {
     console.log('User doesn\'t exist. Creating.')
+    assert(isValidEmail(email), 'Invalid email address')
     assert(password, 'No password provided')
     const userDoc = {
-      name: username,
+      name: email,
       password: password,
       roles: ['agent'],
       type: 'user',
@@ -53,4 +54,8 @@ function addAuthToUrl (plainUrl, user, pass) {
   const urlObj = url.parse(plainUrl)
   urlObj.auth = user + ':' + pass
   return url.format(urlObj)
+}
+
+function isValidEmail (email) {
+  return email.indexOf('@') !== -1 && email.indexOf('.') !== -1
 }

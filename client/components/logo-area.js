@@ -16,11 +16,17 @@ const prefix = css`
     font-size: 150%;
     padding: 10px 15px 0 15px;
     text-transform: inherit;
-  }`
+  }
+  .pure-menu-item a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+`
 
 module.exports = (title, user = {}) => {
   const loginLogoutLink = user.name
-    ? html`<a href="/account" class="pure-menu-link">Logged in as ${user.name}</a>`
+    ? html`<a href="/account" class="pure-menu-link"><i class="fa fa-user"></i> ${user.name}</a>`
     : html`<a href="/login" class="pure-menu-link">Login</a>`
 
   return html`

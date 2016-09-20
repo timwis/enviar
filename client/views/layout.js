@@ -29,7 +29,7 @@ module.exports = (CurrentView) => (state, prev, send) => {
   currentView.classList.add('right')
 
   return html`
-    <div onload=${() => send('initialize')} class=${prefix}>
+    <div onload=${() => send('convos:fetch')} class=${prefix}>
       ${leftPanel}
       ${currentView}
     </div>`

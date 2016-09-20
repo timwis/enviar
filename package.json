@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server/index.js",
-    "test": "ava test --verbose",
+    "test": "ava --verbose",
     "bootstrap": "node database/bootstrap.js",
     "cors": "add-cors-to-couchdb",
     "user": "node database/user.js"
@@ -35,6 +35,8 @@
     "lodash": "^4.14.1",
     "meow": "^3.7.0",
     "nano": "^6.2.0",
+    "node-uuid": "^1.4.7",
+    "postmark": "^1.2.1",
     "pouchdb": "^5.4.5",
     "pouchdb-authentication": "^0.5.4",
     "purecss": "^0.6.0",
@@ -51,6 +53,7 @@
   "devDependencies": {
     "ava": "^0.16.0",
     "jsdom": "^9.4.1",
-    "jsdom-global": "^2.0.0"
+    "jsdom-global": "^2.0.0",
+    "testdouble": "^1.6.1"
   }
 }

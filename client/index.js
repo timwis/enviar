@@ -4,9 +4,12 @@ const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-authentication'))
 
 const Layout = require('./views/layout')
+const RequireAuth = require('./views/require-auth')
 const Login = require('./views/login')
 const Chat = require('./views/chat')
 const Account = require('./views/account')
+const ResetPasswordInit = require('./views/reset-password-init')
+const ResetPasswordConfirm = require('./views/reset-password-confirm')
 
 css('purecss/build/base')
 css('purecss/build/forms')
@@ -35,16 +38,25 @@ if (process.env.NODE_ENV === 'development') {
 const dbURL = process.env.COUCHDB_HOST + '/enviar'
 const db = new PouchDB(dbURL, { skipSetup: true })
 
-app.model(require('./models/app')(db))
-app.model(require('./models/user')(db))
-app.model(require('./models/convos')(db))
+// Check for user session and pass it to user model as initial state
+// Not very chooey but no other option panned out.
+db.getSession((err, body) => {
+  const initialUserState = err ? {} : body.userCtx
+  app.model(require('./models/user')(db, initialUserState))
+  app.model(require('./models/app')(db))
+  app.model(require('./models/convos')(db))
+  app.model(require('./models/ui'))
 
-app.router((route) => [
-  route('/', Layout()),
-  route('/:phone', Layout(Chat)),
-  route('/login', Layout(Login)),
-  route('/account', Layout(Account))
-])
+  app.router((route) => [
+    route('/', RequireAuth(Layout())),
+    route('/:phone', RequireAuth(Layout(Chat))),
+    route('/login', Layout(Login)),
+    route('/account', RequireAuth(Layout(Account))),
+    route('/reset-password', Layout(ResetPasswordInit), [
+      route('/:token', Layout(ResetPasswordConfirm))
+    ])
+  ])
 
-const tree = app.start()
-document.body.appendChild(tree)
+  const tree = app.start()
+  document.body.appendChild(tree)
+})

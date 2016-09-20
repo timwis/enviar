@@ -1,8 +1,9 @@
 const series = require('run-series')
+const http = require('choo/http')
 
-module.exports = (db) => ({
+module.exports = (db, initialState) => ({
   namespace: 'user',
-  state: {
+  state: initialState || {
     name: '',
     roles: []
   },
@@ -37,6 +38,35 @@ module.exports = (db) => ({
         if (err) return done(new Error('Error changing password'))
         const loginData = { username: state.name, password: data.password }
         send('user:login', loginData, done)
+      })
+    },
+    changeEmail: (data, state, send, done) => {
+      const userData = {
+        metadata: {
+          email: data.email
+        }
+      }
+      db.putUser(state.name, userData, (err, body) => {
+        if (err) return done(new Error('Error changing email'))
+        send('ui:set', {changeEmailSubmitted: true}, done)
+      })
+    },
+    resetPasswordInit: (data, state, send, done) => {
+      http.post({
+        uri: '/api/reset-password-init',
+        json: data
+      }, (err, response, body) => {
+        if (err || response.statusCode !== 200) return done(new Error('Error initializing password reset'))
+        send('ui:set', {resetPasswordInitSubmitted: true}, done)
+      })
+    },
+    resetPasswordConfirm: (data, state, send, done) => {
+      http.post({
+        uri: '/api/reset-password-confirm',
+        json: data
+      }, (err, response, body) => {
+        if (err || response.statusCode !== 200) return done(new Error('Error confirming password reset'))
+        send('ui:set', {resetPasswordConfirmSubmitted: true}, done)
       })
     }
   }

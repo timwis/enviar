@@ -51,12 +51,12 @@ command line interface.
 
 To create a user or change a user's password
 ```bash
-npm run user -- <username> <password>
+npm run user -- <email> <password>
 ```
 
 To "upgrade" an existing user to have `agent` access, simply omit the password.
 ```bash
-npm run user -- <username>
+npm run user -- <email>
 ```
 
 This functionality will eventually be incorporated into the application.

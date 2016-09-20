@@ -74,7 +74,8 @@ function initReset (db, emailClient) {
 
 function confirmReset (db) {
   return function confirmResetHandler (req, res) {
-    const { token, password } = req.body
+    const token = req.body.token
+    const password = req.body.password
     if (!token || !password) return respond(res, 400, 'Token or password missing')
 
     const viewOpts = { keys: [token], include_docs: true }

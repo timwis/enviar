@@ -25,8 +25,11 @@ const formBody = require('body/form')
 const fetchMessages = require('./fetch-messages')
 const receiveInbound = require('./receive-inbound')
 const followOutbound = require('./follow-outbound')
-const { initReset, confirmReset } = require('./reset-password')
-const { addAuthToUrl, parseBody, pipeToResponse } = require('./util')
+const initReset = require('./reset-password').initReset
+const confirmReset = require('./reset-password').confirmReset
+const addAuthToUrl = require('./util').addAuthToUrl
+const parseBody = require('./util').parseBody
+const pipeToResponse = require('./util').pipeToResponse
 
 // Setup twilio client (or stub)
 let twilio

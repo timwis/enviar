@@ -18,18 +18,35 @@ function initReset (db, emailClient) {
     if (!email) return respond(res, 400, 'No email provided')
 
     // Find user document
-    const viewOpts = { keys: [email], include_docs: true }
-    db.view('users', 'byEmail', viewOpts, (err, body) => {
-      if (err) return respond(res, 404, 'Error finding user document')
+    const docId = 'org.couchdb.user:' + email
+    db.get(docId, (err, doc) => {
+      if (err) {
+        // No user found
+        const emailConfig = {
+          From: FROM_EMAIL,
+          To: email,
+          Subject: 'Attempted password reset for enviar',
+          TextBody: notFoundTemplate()
+        }
 
-      if (body.rows.length) {
+        // Email "not found" notice to user
+        emailClient.sendEmail(emailConfig, (err, result) => {
+          if (err) return respond(res, 500, 'Error sending reset email')
+
+          res.statusCode = 200
+          res.end()
+        })
+      } else {
         // Found user document
         const token = uuid.v4()
-        const newUserDoc = extend(body.rows[0].doc)
-        newUserDoc.metadata.resetToken = {
-          created: Date.now(),
-          token
-        }
+        const newUserDoc = extend(doc, {
+          metadata: {
+            resetToken: {
+              created: Date.now(),
+              token
+            }
+          }
+        })
 
         // Add reset token to user document
         db.insert(newUserDoc, (err, body) => {
@@ -49,22 +66,6 @@ function initReset (db, emailClient) {
             res.statusCode = 200
             res.end()
           })
-        })
-      } else {
-        // No user found
-        const emailConfig = {
-          From: FROM_EMAIL,
-          To: email,
-          Subject: 'Attempted password reset for enviar',
-          TextBody: notFoundTemplate()
-        }
-
-        // Email "not found" notice to user
-        emailClient.sendEmail(emailConfig, (err, result) => {
-          if (err) return respond(res, 500, 'Error sending reset email')
-
-          res.statusCode = 200
-          res.end()
         })
       }
     })

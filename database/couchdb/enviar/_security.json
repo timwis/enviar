@@ -8,5 +8,6 @@
     "roles": [
       "agent"
     ]
-  }
+  },
+  "couchdb_auth_only": true
 }

@@ -1,3 +1,9 @@
+const VALID_ROLES = ['agent', '_admin']
+
+exports.hasAgentAccess = function hasAgentAccess (userCtx) {
+  return userCtx.roles.some((role) => VALID_ROLES.indexOf(role) !== -1)
+}
+
 exports.formatPhone = function formatPhone (phone) {
   return `(${phone.substring(2, 5)}) ${phone.substring(5, 8)}-${phone.substring(8)}`
 }

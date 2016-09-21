@@ -3,9 +3,9 @@ const shortid = require('shortid')
 const series = require('run-series')
 const extend = require('xtend')
 
-const myLocalStorage = require('../util').localStorageWrapper
+const { localStorageWrapper, hasAgentAccess } = require('../util')
 
-module.exports = (db) => ({
+module.exports = (db, initialUserState) => ({
   namespace: 'convos',
   state: {
     messages: {},
@@ -69,7 +69,7 @@ module.exports = (db) => ({
       const { phone, date } = data
       if (!state.lastRead[phone] || date > state.lastRead[phone]) {
         const newLastRead = extend(state.lastRead, { [phone]: date })
-        myLocalStorage('lastRead', newLastRead, (err) => {
+        localStorageWrapper('lastRead', newLastRead, (err) => {
           if (err) return done(new Error('Error saving last read timestamp to local storage'))
           send('convos:setLastRead', newLastRead, done)
         })
@@ -78,17 +78,19 @@ module.exports = (db) => ({
   },
   subscriptions: {
     watchInbound: (send, done) => {
-      db.changes({
-        since: 'now',
-        live: true,
-        include_docs: true
-      }).on('change', (change) => {
-        if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
-        send('convos:receiveInbound', change.doc, done)
-      })
+      if (hasAgentAccess(initialUserState)) {
+        db.changes({
+          since: 'now',
+          live: true,
+          include_docs: true
+        }).on('change', (change) => {
+          if (change.id.substring(0, 4) !== 'msg-') return // filter out design docs
+          send('convos:receiveInbound', change.doc, done)
+        })
+      }
     },
     getCachedLastRead: (send, done) => {
-      myLocalStorage('lastRead', (err, result) => {
+      localStorageWrapper('lastRead', (err, result) => {
         if (err) return done(new Error('Error retrieving last read timestamps from local storage'))
         send('convos:setLastRead', result, done)
       })

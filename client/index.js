@@ -44,7 +44,7 @@ db.getSession((err, body) => {
   const initialUserState = err ? {} : body.userCtx
   app.model(require('./models/user')(db, initialUserState))
   app.model(require('./models/app')(db))
-  app.model(require('./models/convos')(db))
+  app.model(require('./models/convos')(db, initialUserState))
   app.model(require('./models/ui'))
 
   app.router((route) => [

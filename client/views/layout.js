@@ -2,6 +2,7 @@ const html = require('choo/html')
 const css = require('sheetify')
 
 const LeftPanel = require('./left-panel')
+const { hasAgentAccess } = require('../util')
 
 const prefix = css`
   :host {
@@ -29,7 +30,7 @@ module.exports = (CurrentView) => (state, prev, send) => {
   currentView.classList.add('right')
 
   return html`
-    <div onload=${() => send('convos:fetch')} class=${prefix}>
+    <div onload=${() => hasAgentAccess(state.user) && send('convos:fetch')} class=${prefix}>
       ${leftPanel}
       ${currentView}
     </div>`

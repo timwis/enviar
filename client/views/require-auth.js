@@ -1,4 +1,4 @@
-const VALID_ROLES = ['agent', '_admin']
+const { hasAgentAccess } = require('../util')
 
 module.exports = function RequireAuth (CurrentView) {
   return (state, prev, send) => {
@@ -9,8 +9,4 @@ module.exports = function RequireAuth (CurrentView) {
       return document.createElement('div')
     }
   }
-}
-
-function hasAgentAccess (userCtx) {
-  return userCtx.roles.some((role) => VALID_ROLES.indexOf(role) !== -1)
 }

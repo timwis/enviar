@@ -1,6 +1,7 @@
 const uuid = require('node-uuid')
 const extend = require('xtend')
 const path = require('path')
+const { stripIndent } = require('common-tags')
 
 const BASE_URL = process.env.BASE_URL
 const FROM_EMAIL = process.env.FROM_EMAIL
@@ -106,7 +107,7 @@ function isExpired (timestamp) {
 }
 
 function resetEmailTemplate (token) {
-  return `
+  return stripIndent`
     Hello,
 
     Follow this link to reset your enviar password for your enviar account.
@@ -122,7 +123,7 @@ function resetEmailTemplate (token) {
 }
 
 function notFoundTemplate () {
-  return `
+  return stripIndent`
     You (or someone else) entered this email address when trying to change the password of an enviar account.
 
     However, this email address is not in our database of registered users and therefore the attempted password change has failed.

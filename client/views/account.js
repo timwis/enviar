@@ -2,6 +2,8 @@ const html = require('choo/html')
 const getFormData = require('get-form-data')
 const css = require('sheetify')
 
+const { hasAdminAccess } = require('../util')
+
 const prefix = css`
   :host {
     height: 100%;
@@ -40,6 +42,26 @@ module.exports = (state, prev, send) => {
 
         <button type="submit" class="pure-button pure-button-primary">Change Password</button>
       </form>
+
+      ${hasAdminAccess(state.user)
+        ? html`
+          <div>
+            <h2>Invite new user</h2>
+            <form class="pure-form pure-form-stacked" onsubmit=${onInvite}>
+              <label>
+                Email
+                <input type="text" name="email">
+              </label>
+
+              <button type="submit" class="pure-button pure-button-primary">Invite</button>
+
+              ${state.ui.inviteSubmitted
+                ? html`<div class="alert">An email has been sent to the address you entered with futher instructions.</div>`
+                : ''}
+            </form>
+          </div>`
+        : ''}
+
     </section>`
 
   function onChangePassword (e) {
@@ -48,6 +70,16 @@ module.exports = (state, prev, send) => {
       send('user:changePassword', formData)
     } else {
       console.error('Passwords do not match')
+    }
+    e.preventDefault()
+  }
+
+  function onInvite (e) {
+    const input = e.target.querySelector('[name=email]')
+    const email = input.value
+    if (email) {
+      send('user:invite', { email })
+      input.value = ''
     }
     e.preventDefault()
   }

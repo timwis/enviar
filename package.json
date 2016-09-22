@@ -26,6 +26,7 @@
     "browserify": "^13.1.0",
     "choo": "^3.2.0",
     "choo-log": "^1.4.0",
+    "common-tags": "^1.3.1",
     "couchdb-bootstrap": "^1.14.0",
     "dotenv": "^2.0.0",
     "envify": "^3.4.1",

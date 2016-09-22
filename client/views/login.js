@@ -17,7 +17,7 @@ module.exports = (state, prev, send) => {
       <form class="pure-form pure-form-stacked" onsubmit=${onSubmit}>
         <label>
           Email
-          <input type="text" name="username">
+          <input type="text" name="email">
         </label>
 
         <label>

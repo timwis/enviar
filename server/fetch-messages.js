@@ -14,16 +14,14 @@ function seedWithMessages (db, twilio) {
   }, (err, body) => {
     if (err) return console.error(err)
 
+    const fetchOpts = {} // By default, fetch a page of most recent messages
     if (body.rows.length) {
       // If db already contains message records, fetch records since latest one
       console.log('most recent message', body.rows[0])
       const mostRecentDate = body.rows[0].doc.date
-      twilio.messages.get({ 'DateSent>': mostRecentDate }, formatAndInsert)
-    } else {
-      // Otherwise it's a fresh db - fetch a page of messages
-      console.log('no messages in db, seeding')
-      twilio.messages.get({}, formatAndInsert)
+      fetchOpts['DateSent>'] = mostRecentDate
     }
+    twilio.messages.get(fetchOpts, formatAndInsert)
   })
 
   function formatAndInsert (err, response) {

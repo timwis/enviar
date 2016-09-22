@@ -1,6 +1,6 @@
 const series = require('run-series')
 const http = require('choo/http')
-const shortid = require('shortid')
+const uuid = require('node-uuid')
 
 module.exports = (db, initialState) => ({
   namespace: 'user',
@@ -61,7 +61,7 @@ module.exports = (db, initialState) => ({
     },
     invite: (data, state, send, done) => {
       const email = data.email
-      const password = randomPassword()
+      const password = uuid.v4()
       series([
         (cb) => send('user:register', { email, password }, cb),
         (cb) => send('user:resetPasswordInit', { email }, cb)
@@ -77,7 +77,3 @@ module.exports = (db, initialState) => ({
     }
   }
 })
-
-function randomPassword () {
-  return shortid.generate() + shortid.generate()
-}

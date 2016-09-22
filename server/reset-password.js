@@ -1,7 +1,7 @@
 const uuid = require('node-uuid')
 const extend = require('xtend')
 const path = require('path')
-const { stripIndent } = require('common-tags')
+const stripIndent = require('common-tags').stripIndent
 
 const BASE_URL = process.env.BASE_URL || ''
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@noreply.com'

@@ -1,6 +1,6 @@
 {
   "name": "enviar",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "Chat interface for SMS / text messages",
   "main": "server.js",
   "scripts": {

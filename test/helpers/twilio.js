@@ -1,5 +1,5 @@
-const messages = require('./messages.json')
-const outbound = require('./outbound.json')
+const messages = require('../fixtures/twilio/messages.json')
+const outbound = require('../fixtures/twilio/outbound.json')
 
 module.exports = {
   messages: {

@@ -14,7 +14,6 @@ const POSTMARK_SERVER_TOKEN = process.env.POSTMARK_SERVER_TOKEN
 const http = require('http')
 const assert = require('assert')
 const nano = require('nano')
-const postmark = require('postmark')
 const serverRouter = require('server-router')
 const bankai = require('bankai')
 const browserify = require('browserify')
@@ -31,20 +30,22 @@ const addAuthToUrl = require('./util').addAuthToUrl
 const parseBody = require('./util').parseBody
 const pipeToResponse = require('./util').pipeToResponse
 
-// Setup twilio client (or stub)
-let twilio
+// Setup twilio and postmark client (or stubs)
+let twilio, emailClient
 if (DEV) {
-  twilio = require('../test/fixtures/twilio/stub')
+  twilio = require('../test/helpers/twilio')
+  const postmark = require('../test/helpers/postmark')
+  emailClient = new postmark.Client()
 } else {
   assert(TWILIO_ACCOUNT_SID, 'TWILIO_ACCOUNT_SID environment variable is not defined')
   assert(TWILIO_AUTH_TOKEN, 'TWILIO_AUTH_TOKEN environment variable is not defined')
   assert(TWILIO_PHONE, 'TWILIO_PHONE environment variable is not defined')
   twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-}
 
-// Setup postmark client
-assert(POSTMARK_SERVER_TOKEN, 'POSTMARK_SERVER_TOKEN environment variable is not defined')
-const emailClient = new postmark.Client(POSTMARK_SERVER_TOKEN)
+  assert(POSTMARK_SERVER_TOKEN, 'POSTMARK_SERVER_TOKEN environment variable is not defined')
+  const postmark = require('postmark')
+  emailClient = new postmark.Client(POSTMARK_SERVER_TOKEN)
+}
 
 // Setup CouchDB
 assert(COUCHDB_HOST, 'COUCHDB_HOST environment variable is not defined')

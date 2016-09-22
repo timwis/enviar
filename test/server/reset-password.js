@@ -6,8 +6,7 @@ const { matchWithEmail, matchWithToken } = require('../fixtures/users/generator'
 
 test('reset password : initReset : if no user found, return 200 and send not found email', (t) => {
   const email = 'foo@bar.com'
-  const sampleData = { rows: [] }
-  const db = stubDB('byEmail', email, sampleData)
+  const db = stubDB('byEmail', email) // no sampleData will throw error
   const emailClient = stubEmail()
   const res = stubResponse()
   const req = { body: { email } }
@@ -84,13 +83,17 @@ test('reset password : confirmReset : if valid token, reset password and delete 
   t.is(res.statusCode, 200, 'status code is 200')
 })
 
-function stubDB (viewName, key, response) {
+function stubDB (viewName, lookup, response) {
   const db = td.object({
+    get: () => {},
     view: () => {},
     insert: () => {}
   })
-  const viewOpts = { keys: [key], include_docs: true }
-  td.when(db.view('users', viewName, viewOpts)).thenCallback(null, response)
+  const key = 'org.couchdb.user:' + lookup
+  const error = response ? null : new Error('Not found')
+  const viewOpts = { keys: [lookup], include_docs: true }
+  td.when(db.view('users', viewName, viewOpts)).thenCallback(error, response)
+  td.when(db.get(key)).thenCallback(error, response)
   td.when(db.insert(td.matchers.isA(Object))).thenCallback()
   return db
 }

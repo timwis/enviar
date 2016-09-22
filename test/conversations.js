@@ -4,7 +4,9 @@ const sortBy = require('lodash/sortby')
 require('jsdom-global')()
 
 const model = require('../client/models/convos')()
-const chat = require('../client/pages/chat')
+const Layout = require('../client/views/layout')
+const Chat = require('../client/views/chat')
+const View = Layout(Chat)
 const messagesFixture = require('./fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
@@ -24,7 +26,7 @@ test('reducers : upsert : group by message id', (t) => {
 test('pages : chat : group messages by conversation', (t) => {
   const state = generateState(messagesFixture)
   const send = () => {}
-  const view = chat(state, {}, send)
+  const view = View(state, {}, send)
 
   const convoLinks = view.querySelector('#conversations').children
   t.is(convoLinks.length, 8, 'correct number of conversation links')
@@ -34,7 +36,7 @@ test('pages : chat : show active conversation messages', (t) => {
   const state = generateState(messagesFixture)
   state.params = { phone: samplePhone }
   const send = () => {}
-  const view = chat(state, {}, send)
+  const view = View(state, {}, send)
 
   const messageItems = view.querySelector('#messages').children
   t.is(messageItems.length, 4, 'correct number of messages')
@@ -44,7 +46,7 @@ test('pages : chat : new message merged into existing list', (t) => {
   const stateBefore = generateState(messagesFixture)
   stateBefore.params = { phone: samplePhone }
   const send = () => {}
-  const viewBefore = chat(stateBefore, {}, send)
+  const viewBefore = View(stateBefore, {}, send)
 
   const numConvosBefore = viewBefore.querySelector('#conversations').children.length
   const numMessagesBefore = viewBefore.querySelector('#messages').children.length
@@ -59,7 +61,7 @@ test('pages : chat : new message merged into existing list', (t) => {
 
   const stateAfter = generateState([newMsg], stateBefore.convos)
   stateAfter.params = { phone: samplePhone }
-  const viewAfter = chat(stateAfter, {}, send)
+  const viewAfter = View(stateAfter, {}, send)
   const numConvosAfter = viewAfter.querySelector('#conversations').children.length
   const numMessagesAfter = viewAfter.querySelector('#messages').children.length
 
@@ -71,7 +73,7 @@ test('pages : chat : sort messages list', (t) => {
   const state = generateState(messagesFixture)
   state.params = { phone: samplePhone }
   const send = () => {}
-  const view = chat(state, {}, send)
+  const view = View(state, {}, send)
 
   const uiMessages = view.querySelector('#messages').children
   const latestUIMessage = uiMessages[uiMessages.length - 1]

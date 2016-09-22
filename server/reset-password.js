@@ -3,8 +3,8 @@ const extend = require('xtend')
 const path = require('path')
 const { stripIndent } = require('common-tags')
 
-const BASE_URL = process.env.BASE_URL
-const FROM_EMAIL = process.env.FROM_EMAIL
+const BASE_URL = process.env.BASE_URL || ''
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@noreply.com'
 
 const respond = require('./util').respond
 

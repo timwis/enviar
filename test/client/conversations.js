@@ -3,11 +3,11 @@ const extend = require('xtend')
 const sortBy = require('lodash/sortby')
 require('jsdom-global')()
 
-const model = require('../client/models/convos')()
-const Layout = require('../client/views/layout')
-const Chat = require('../client/views/chat')
+const model = require('../../client/models/convos')()
+const Layout = require('../../client/views/layout')
+const Chat = require('../../client/views/chat')
 const View = Layout(Chat)
-const messagesFixture = require('./fixtures/formatted/messages.json')
+const messagesFixture = require('../fixtures/formatted/messages.json')
 const samplePhone = '+17034524023'
 
 function generateState (messages, prev = {}) {

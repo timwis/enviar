@@ -25,24 +25,6 @@ production, you can skip this part for now.
 You can use [Cloudant's](https://cloudant.com) free tier for the database by
 setting up an account there. Create a database called `enviar` once you've signed up.
 
-##### Configuring the database
-The database needs the right security settings configured, and *at the moment*,
-the only way to do that is by running a script. That means you have to do a manual
-install of enviar. We'll [make this easier soon](https://github.com/timwis/enviar/issues/93).
-
-1. Clone this repo using `git clone https://github.com/timwis/enviar.git`
-2. Install node dependencies via `npm install`
-3. Copy `.env.sample` to `.env`
-4. Fill in your Cloudant hostname, username, and password in `.env` (the `COUCHDB_` ones)
-5. Run `npm run bootstrap`
-
-You should see a response like this
-```
-{ configure: undefined,
-  secure: { enviar: { ok: true } },
-  push: { _users: [ [Object] ], enviar: [ [Object] ] } }
-```
-
 #### Application
 You can run the application on [Heroku's](https://heroku.com) free tier.
 
@@ -72,9 +54,7 @@ In doing so, you'll create your admin account with a password.
 4. Fill in your the `COUCHDB_HOST` in `.env` (ie. `http://localhost:5984`), along
 with the `COUCHDB_USER` and `COUCHDB_PASS` you setup. The other variables are only
 required in production mode.
-5. Configure the database's security settings by running `npm run bootstrap` from
-the terminal
-6. Enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+5. Enable [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
 by running `npm run cors` from the terminal
 
 ## Usage

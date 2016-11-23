@@ -36,7 +36,6 @@
     "lodash": "^4.14.1",
     "meow": "^3.7.0",
     "nano": "^6.2.0",
-    "node-uuid": "^1.4.7",
     "postmark": "^1.2.1",
     "pouchdb": "^5.4.5",
     "pouchdb-authentication": "^0.5.4",
@@ -49,6 +48,7 @@
     "shortid": "^2.2.6",
     "timeago.js": "^1.0.5",
     "twilio": "^2.9.1",
+    "uuid": "^3.0.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {

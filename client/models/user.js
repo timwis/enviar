@@ -1,6 +1,6 @@
 const series = require('run-series')
 const http = require('choo/http')
-const uuid = require('node-uuid')
+const uuid = require('uuid')
 
 module.exports = (db, initialState) => ({
   namespace: 'user',

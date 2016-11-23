@@ -1,4 +1,4 @@
-const uuid = require('node-uuid')
+const uuid = require('uuid')
 const extend = require('xtend')
 const path = require('path')
 const stripIndent = require('common-tags').stripIndent
